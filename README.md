@@ -559,7 +559,7 @@ La interfaz será desarrollada utilizando **TailwindCSS**, priorizando un enfoqu
 Antes de comenzar, instalar:
 
 - Node.js
-- npm
+- Yarn
 - PostgreSQL
 
 Opcionalmente:
@@ -581,7 +581,10 @@ cd sabor-gourmet
 ## Instalar dependencias
 
 ```bash
-npm install
+yarn install
+cd frontend
+yarn install
+cd ..
 ```
 
 ---
@@ -626,13 +629,13 @@ CREATE DATABASE sabor_gourmet;
 Luego ejecutar las migraciones:
 
 ```bash
-npx prisma migrate dev
+yarn db:migrate
 ```
 
 Generar Prisma Client:
 
 ```bash
-npx prisma generate
+yarn db:generate
 ```
 
 ---
@@ -642,7 +645,7 @@ npx prisma generate
 Para cargar datos iniciales:
 
 ```bash
-npx prisma db seed
+yarn db:seed
 ```
 
 El seed puede crear:
@@ -658,7 +661,7 @@ El seed puede crear:
 Modo desarrollo:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 El servidor estará disponible en:
@@ -692,7 +695,7 @@ Los tests se realizarán utilizando **Vitest**.
 Ejecutar:
 
 ```bash
-npm run test
+yarn test
 ```
 
 Se dará especial prioridad a las pruebas relacionadas con:
@@ -712,27 +715,27 @@ Se dará especial prioridad a las pruebas relacionadas con:
 Ejecutar ESLint:
 
 ```bash
-npm run lint
+yarn lint
 ```
 
 Formatear código:
 
 ```bash
-npm run format
+yarn format
 ```
 
 Verificar TypeScript:
 
 ```bash
-npm run typecheck
+yarn typecheck
 ```
 
 Antes de realizar un commit se recomienda verificar:
 
 ```bash
-npm run lint
-npm run typecheck
-npm run test
+yarn lint
+yarn typecheck
+yarn test
 ```
 
 ---

@@ -1,556 +1,226 @@
-# AGENTS.md
+# AGENTS.md — Sabor Gourmet
 
-# Sabor Gourmet - Desarrollo de Software Web II
+## Propósito
 
-## Objetivo del proyecto
+Esta guía define cómo implementar el MVP descrito en `docs/BRIEF.md`.
 
-Desarrollar una aplicación web utilizando una arquitectura MVC para la administración de usuarios reservas en línea para el Restaurante "Sabor Gourmet", aplicando buenas prácticas de desarrollo de software, seguridad, validación de datos y trabajo colaborativo mediante Git.
+- `docs/BRIEF.md` define **qué** debe hacer el producto.
+- `AGENTS.md` define **cómo** debe construirse.
 
-Este proyecto está siendo desarrollado por dos integrantes utilizando un arnés agéntico (Oh My Pi + OpenCode Go), por lo que todos los agentes deben respetar estrictamente las convenciones descritas en este documento.
+Si hay una contradicción, informar antes de implementar. No agregar alcance por iniciativa propia.
 
----
+## Stack obligatorio
 
-# Stack tecnológico
+- Backend: Node.js, Express.js y TypeScript.
+- Base de datos: PostgreSQL y Prisma ORM.
+- Frontend: React, TypeScript, TailwindCSS y Vite.
+- Validación: Zod.
+- Seguridad: `bcryptjs` y `express-session`.
+- Desarrollo: Yarn, `tsx watch`, ESLint, Prettier y Vitest.
+- Docker Compose es opcional.
 
-## Backend
+Nodemon puede reemplazar `tsx watch`, pero no se deben usar ambos. No agregar dependencias innecesarias.
 
-- Node.js
-- Express.js
-- TypeScript
+## Arquitectura MVC
 
-## Base de datos
-
-- Prisma ORM
-- PostgreSQL
-
-## Frontend
-
-- React
-- TailwindCSS
-
-## Validaciones
-
-- Zod
-
-## Seguridad
-
-- bcryptjs
-- express-session
-
-## Desarrollo
-
-- Nodemon
-
-## Opcional
-
-- Docker
-- Docker Compose
-
----
-
-# Arquitectura
-
-El proyecto sigue una arquitectura MVC.
-
-```
-React
-   ↓
-REST API
-   ↓
-Express
-   ↓
+```text
+React / vistas
+      ↓ HTTP / REST
+Routes + middlewares
+      ↓
 Controllers
-   ↓
+      ↓
 Services
-   ↓
-Models
-   ↓
-Prisma
-   ↓
+      ↓
+Models + Prisma
+      ↓
 PostgreSQL
 ```
 
-Cada capa tiene una responsabilidad específica.
+### Frontend
 
-Ejemplo:
+React contiene vistas, componentes y estado de interfaz. No decide de forma definitiva disponibilidad, permisos ni estado de reservas.
 
-```
+Las vistas nuevas deben ser responsive, accesibles con teclado y construidas con TailwindCSS. Para cambios visuales consultar `skill://frontend-design`.
 
-frontend/
-└── views/
-    ├── auth/
-    ├── reservations/
-    ├── admin/
-    └── components/
-        └── ui/
+### Routes
+
+Define endpoints y conecta middlewares con controllers. No contiene lógica de negocio ni acceso a Prisma.
+
+### Controllers
+
+Recibe la petición HTTP, usa datos validados, llama al service y devuelve JSON. No contiene consultas Prisma ni reglas complejas.
+
+### Services
+
+Contiene la lógica de negocio: disponibilidad, asignación de mesa, creación, edición, cancelación y autenticación de administrador.
+
+### Models
+
+Contiene todo acceso a Prisma y PostgreSQL. No conoce Express ni React.
+
+### Schemas
+
+Contiene esquemas Zod para validar `body`, `params` y `query`.
+
+### Middleware
+
+Contiene validación, sesión, autorización de administrador y manejo de errores.
+
+## Estructura mínima
+
+```text
+prisma/
+├── migrations/
+├── schema.prisma
+└── seed.ts
+
 src/
-│
 ├── app.ts
 ├── server.ts
-│
 ├── config/
-│   └── env.ts
-│
 ├── controllers/
-│   ├── auth.controller.ts
-│   ├── reservation.controller.ts
-│   ├── table.controller.ts
-│   └── user.controller.ts
-│
-├── models/
-│   ├── user.model.ts
-│   ├── reservation.model.ts
-│   └── table.model.ts
-│
-├── services/
-│   ├── auth.service.ts
-│   ├── reservation.service.ts
-│   └── table.service.ts
-│
-├── routes/
-│   ├── auth.routes.ts
-│   ├── reservation.routes.ts
-│   ├── table.routes.ts
-│   └── user.routes.ts
-│
 ├── middleware/
-│   ├── auth.middleware.ts
-│   ├── admin.middleware.ts
-│   ├── error.middleware.ts
-│   └── validation.middleware.ts
-│
+├── models/
+├── routes/
 ├── schemas/
-│   ├── auth.schema.ts
-│   ├── reservation.schema.ts
-│   ├── table.schema.ts
-│   └── user.schema.ts
-│
-├── types/
-│   ├── auth.types.ts
-│   └── reservation.types.ts
-│
-├── utils/
-│   ├── password.ts
-│   └── date.ts
-│
-prisma/
-├── schema.prisma
-├── seed.ts
-└── migrations/
+└── services/
+
+frontend/src/
+├── App.tsx
+├── components/
+├── views/
+└── services/
 ```
 
----
+Crear archivos solo cuando una funcionalidad los necesite. Reutilizar patrones existentes.
 
-# Módulos de la aplicación
+## Reglas técnicas del MVP
 
-Sabor Gourmet
-│
-├── Autenticación
-│ ├── Registro
-│ ├── Login
-│ ├── Logout
-│ └── Sesiones
-│
-├── Cliente
-│ ├── Ver disponibilidad
-│ ├── Crear reserva
-│ ├── Ver mis reservas
-│ ├── Modificar reserva
-│ └── Cancelar reserva
-│
-├── Reservas
-│ ├── Disponibilidad
-│ ├── Crear
-│ ├── Modificar
-│ ├── Cancelar
-│ └── Historial
-│
-├── Mesas
-│ ├── Ver mesas
-│ ├── Crear mesa
-│ ├── Modificar mesa
-│ ├── Desactivar mesa
-│ └── Configurar capacidad
-│
-└── Administración
-├── Dashboard
-├── Reservas actuales
-├── Gestión de mesas
-└── Gestión de usuarios
+- Las reservas públicas no requieren cuenta, sesión ni `userId` de cliente.
+- Solo el administrador usa autenticación y sesión.
+- `User` representa únicamente cuentas administrativas en este MVP.
+- `Reservation` guarda nombre, apellido y email directamente.
+- No crear usuarios falsos para reservas públicas.
+- El administrador inicial se crea con `prisma seed`.
+- El servidor asigna automáticamente la mesa.
+- Cada reserva dura 90 minutos.
+- Los horarios comienzan cada 30 minutos, de miércoles a domingo.
+- Solo mesas activas y con capacidad suficiente participan.
+- Nunca se confirma una reserva superpuesta.
+- La comprobación y escritura deben evitar doble reserva concurrente.
+- Cancelar cambia a `CANCELLED`; no se hace hard delete.
+- No implementar funciones fuera del brief.
 
-## Disponibilidad de reservas/mesas
+### Modelo de reserva pública
 
-Mesa disponible ≠ reserva disponible.
+Una reserva pública es válida sin usuario porque identifica al cliente mediante datos de contacto, no mediante autenticación:
 
-La disponibilidad debe calcularse considerando:
-
-fecha
-hora
-duración de la reserva
-capacidad de la mesa
-reservas existentes
-estado de la mesa
-
-# Responsabilidades de cada carpeta
-
-## controllers/
-
-Los controladores:
-
-- reciben la petición
-- validan el flujo
-- llaman al modelo correspondiente
-- renderizan vistas
-- realizan redirecciones
-
-Los controladores NO deben contener consultas SQL ni lógica de Prisma.
-
----
-
-## models/
-
-Los modelos contienen la lógica de acceso a datos.
-
-Toda interacción con Prisma debe realizarse desde esta capa.
-
-Los modelos NO deben renderizar vistas.
-
----
-
-## routes/
-
-Las rutas únicamente:
-
-- reciben la petición
-- ejecutan middlewares
-- llaman al controlador correspondiente
-
-Las rutas NO deben contener lógica de negocio.
-
----
-
-## middleware/
-
-Contiene middleware como:
-
-- autenticación
-- autorización
-- manejo de sesiones
-- protección de rutas
-
----
-
-## schemas/
-
-Contiene exclusivamente esquemas de validación Zod.
-
-Ejemplo:
-
-```
-user.schema.ts
-
-game.schema.ts
-
-auth.schema.ts
+```text
+Reservation
+├── firstName
+├── lastName
+├── email
+├── confirmationCode
+├── tableId
+├── date
+├── startTime
+├── endTime
+├── guests
+└── status
 ```
 
----
-
-## prisma/
-
-Contiene:
-
-- schema.prisma
-- migrations
-- seed.ts
-
----
-
-## views/
-
-Las vistas están organizadas por módulos. Usa siempre la skill /frontend-design
-
-Ejemplo:
-
-```
-views/
-
-auth/
-
-users/
-
-reservations/
-
-components/
-  /ui
-
-```
-
----
-
-## public/
-
-Archivos estáticos.
-
-```
-css/
-
-js/
-
-images/
-```
-
----
-
-# Convenciones de código
-
-## TypeScript
-
-Siempre utilizar tipado.
-
-Evitar el uso de:
-
-```
-any
-```
-
-Siempre que sea posible utilizar interfaces o tipos.
-
----
-
-## Async
-
-Toda operación de base de datos debe utilizar:
-
-```
-async/await
-```
-
-Evitar callbacks.
-
----
-
-## Nombres
-
-Usar eslint para estandarización del codigo
-
-Variables
-
-```
-camelCase
-```
-
-Clases
-
-```
-PascalCase
-```
-
-Archivos
-
-```
-user.controller.ts
-
-user.model.ts
-
-user.routes.ts
-
-user.schema.ts
-```
-
----
-
-## Funciones
-
-Las funciones deben ser pequeñas y con una única responsabilidad.
-
-Evitar funciones extremadamente largas.
-
----
-
-# Validaciones
-
-Toda información proveniente del usuario debe validarse mediante Zod antes de ser procesada.
-
-Nunca confiar en:
-
-- req.body
-- req.params
-- req.query
-
-Utilizar:
-
-```
-safeParse()
-```
-
-cuando corresponda.
-
----
-
-# Seguridad
-
-Las contraseñas nunca deben almacenarse en texto plano.
-
-Siempre utilizar:
-
-- bcryptjs
-
-con hash + salt.
-
----
-
-# Base de datos
-
-La aplicación utiliza Prisma ORM.
-
-No escribir SQL manual salvo que sea absolutamente necesario.
-
-Preferir siempre Prisma Client.
-
----
-
-# Soft Delete
-
-Los registros no deben eliminarse físicamente.
-
-Utilizar Soft Delete mediante un campo como:
-
-```
-deletedAt DateTime?
-```
-
-Los registros eliminados no deben aparecer en consultas normales.
-
----
-
-# Git
-
-Nunca trabajar directamente sobre:
-
-```
-main
-```
-
-Las funcionalidades deben desarrollarse mediante ramas.
-
-Ejemplos:
-
-```
-feat/login
-
-feat/register
-
-feat/users
-
-feat/games
-
-feat/auth
-
-fix/login
-
-refactor/models
-```
-
-Los commits deben ser pequeños y descriptivos.
-
----
-
-# Trabajo colaborativo
-
-Evitar modificar simultáneamente los mismos archivos.
-
-Siempre que sea posible dividir el trabajo por módulos.
-
-Ejemplo:
-
-Desarrollador A
-
-- Usuarios
-- Autenticación
-
-Desarrollador B
-
-- Juegos
-- Base de datos
-
----
-
-# Prisma
-
-Evitar conflictos en:
-
-```
-schema.prisma
-```
-
-Las modificaciones estructurales de la base de datos deben coordinarse entre ambos desarrolladores antes de generar nuevas migraciones.
-
----
-
-# Estilo de desarrollo
-
-Priorizar:
-
-- código simple
-- código legible
-- mantenibilidad
-- tipado fuerte
-- separación de responsabilidades
-
-Evitar soluciones excesivamente complejas cuando exista una alternativa más sencilla.
-
----
-
-# Qué deben hacer los agentes
-
-Siempre que generen código deben:
-
-- respetar la arquitectura MVC
-- utilizar TypeScript moderno
-- utilizar async/await
-- utilizar Prisma
-- validar entradas con Zod
-- utilizar bcrypt para contraseñas
-- seguir la estructura de carpetas del proyecto
-- mantener consistencia con el resto del código
-- reutilizar código antes de duplicarlo
-- escribir código limpio y fácil de mantener
-
----
-
-# Qué NO deben hacer
-
-No deben:
-
-- usar `any` innecesariamente
-- escribir consultas SQL manuales
-- acceder a Prisma desde las rutas
-- colocar lógica de negocio en las vistas
-- duplicar lógica entre controladores
-- eliminar registros físicamente (hard delete)
-- generar código que rompa la arquitectura MVC
-
----
-
-# Objetivo final
-
-Construir una aplicación consistente, mantenible y fácil de extender, siguiendo buenas prácticas de desarrollo web moderno con Express, TypeScript y Prisma.
+En este MVP no debe existir una relación obligatoria `Reservation.userId -> User`. `User` queda reservado para la sesión del administrador.
+
+## Validación y seguridad
+
+- Validar con Zod todo `req.body`, `req.params` y `req.query`.
+- Nunca confiar en datos enviados por React.
+- No usar `any` sin justificación.
+- Guardar contraseñas solo como hash con `bcryptjs`.
+- Proteger únicamente las rutas administrativas con sesión y autorización.
+- Las rutas públicas de disponibilidad y creación no requieren sesión.
+- El cliente no puede decidir rol, estado, disponibilidad ni mesa.
+- No registrar contraseñas, sesiones ni secretos.
+- Mantener secretos en variables de entorno.
+- Usar Prisma Client; SQL manual solo con justificación.
+
+## Principios de calidad
+
+El código debe ser:
+
+- limpio y autoexplicativo;
+- ordenado y fácil de leer;
+- guiado por los principios SOLID:
+  - **S**ingle Responsibility: cada función, clase y módulo tiene una sola razón para cambiar;
+  - **O**pen/Closed: las entidades deben estar abiertas a extensión, cerradas a modificación;
+  - **L**iskov Substitution: las subclases deben ser sustituibles por sus clases base;
+  - **I**nterface Segregation: interfaces pequeñas y específicas, no genéricas;
+  - **D**ependency Inversion: depender de abstracciones, no de implementaciones concretas.
+- Preferir composición sobre herencia.
+- Mantener funciones pequeñas, con un solo propósito.
+- Nombrar variables, funciones y archivos de forma descriptiva.
+- Evitar comentarios que repitan lo que el código ya dice.
+- Eliminar código muerto, imports sin usar y variables no referenciadas.
+
+## Dependencias y documentación
+
+- Antes de agregar cualquier librería nueva, consultar documentación oficial con **MCP Context7** o **web search**.
+- Verificar que la dependencia sea necesaria: si el stack actual o una función nativa resuelven el problema, no agregarla.
+- Preferir dependencias con buena documentación, mantenimiento activo y licencia compatible.
+- Al usar una API de librería por primera vez, consultar su documentación más reciente.
+- No instalar librerías deprecadas o sin mantenimiento.
+
+## Git y trabajo colaborativo
+
+- No trabajar directamente sobre `main`.
+- Usar ramas descriptivas según el cambio, por ejemplo `feat/public-reservation`, `feat/admin-reservations`, `feat/table-management` o `fix/availability`.
+- Mantener commits pequeños y descriptivos.
+- Coordinar cambios en `prisma/schema.prisma` y sus migraciones.
+- No mezclar formateo masivo con funcionalidades.
+
+## Protocolo de agentes
+
+Antes de editar:
+
+1. Leer `docs/BRIEF.md` y esta guía.
+2. Revisar código relacionado y patrones existentes.
+3. Localizar referencias afectadas.
+4. Consultar documentación oficial de cualquier librería o API desconocida mediante MCP Context7 o web search.
+
+Al implementar:
+
+1. Mantener el flujo MVC.
+2. Validar entradas en servidor con Zod.
+3. Colocar reglas en services.
+4. Colocar Prisma en models.
+5. Mantener el alcance mínimo del brief.
+6. No dejar stubs, mocks, no-ops ni código muerto.
 
 ## Definition of Done
 
-Una funcionalidad se considera terminada cuando:
+- [ ] Cumple `docs/BRIEF.md`.
+- [ ] Entradas validadas con Zod.
+- [ ] Tipado TypeScript correcto.
+- [ ] Routes sin lógica de negocio ni Prisma.
+- [ ] Services con reglas de negocio.
+- [ ] Models con acceso a Prisma.
+- [ ] Rutas administrativas protegidas.
+- [ ] No existe hard delete.
+- [ ] No se permiten reservas superpuestas.
+- [ ] Interfaz usable en móvil y escritorio.
+- [ ] Typecheck, lint y pruebas relevantes pasan.
 
-- [ ] La entrada está validada mediante Zod.
-- [ ] Existe tipado TypeScript adecuado.
-- [ ] La lógica de negocio está fuera de las rutas.
-- [ ] El acceso a Prisma está encapsulado en models.
-- [ ] Las rutas están protegidas cuando corresponde.
-- [ ] Se respetan los roles de usuario.
-- [ ] Se implementa soft delete cuando corresponde.
-- [ ] La funcionalidad funciona en móvil y escritorio.
-- [ ] No existen errores de TypeScript.
-- [ ] ESLint no reporta errores.
-- [ ] Se agregaron tests cuando existe lógica de negocio relevante.
-- [ ] El cambio está en una rama específica.
-- [ ] El commit describe claramente el cambio.
+## Prohibiciones
+
+No:
+
+- romper MVC;
+- acceder a Prisma desde routes, controllers o React;
+- omitir Zod;
+- guardar contraseñas sin hash;
+- confiar en el frontend;
+- eliminar reservas físicamente;
+- agregar cuentas de clientes, notificaciones, pagos o reportes al MVP;
+- agregar dependencias sin necesidad;
+- dejar implementaciones falsas o incompletas.

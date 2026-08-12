@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { Eyebrow } from './ui/Eyebrow';
 
 export function HeroSection() {
@@ -13,16 +14,16 @@ export function HeroSection() {
           <br />
           <em className="font-medium text-gold">recordar.</em>
         </h1>
-        <p className="mt-hero-copy-top mb-hero-copy-bottom max-w-intro text-sm leading-copy text-muted">
+        <p className="mt-hero-copy-top mb-hero-copy-bottom max-w-intro text-base leading-copy text-muted">
           Ingredientes de temporada, fuego lento y una noche hecha a tu medida.
           Tu próxima historia empieza aquí.
         </p>
-        <a
+        <Link
           className="inline-block border-b border-brown-line pb-link font-mono text-eyebrow uppercase tracking-link hover:text-gold"
-          href="#reservar"
+          to="/reservar"
         >
           Encuentra tu mesa <span className="ml-2 text-gold">↓</span>
-        </a>
+        </Link>
       </div>
       <div
         className="absolute right-stamp-right top-28 flex size-stamp rotate-stamp flex-col items-center justify-center gap-1 rounded-full border border-brown-line font-mono text-stamp tracking-stamp text-gold max-phone:right-stamp-mobile-right max-phone:top-stamp-mobile-top"

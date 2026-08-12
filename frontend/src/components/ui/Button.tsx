@@ -7,7 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses = {
-  primary: 'border-0 bg-ink px-submit-x py-submit-y text-xs text-cream hover:bg-label',
+  primary: 'border-0 bg-ink px-submit-x py-submit-y text-sm text-cream hover:bg-label',
   slot: 'border px-slot-x py-2.5 font-mono text-slot text-panel-copy hover:border-ink hover:bg-ink hover:text-cream',
 };
 

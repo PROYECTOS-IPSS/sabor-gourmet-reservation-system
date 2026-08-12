@@ -73,17 +73,17 @@
   --spacing-quote-bottom: 17px;
   --spacing-footer-y: 22px;
 
-  --text-brand: 15px;
-  --text-eyebrow: 10px;
-  --text-micro: 9px;
-  --text-stamp: 8px;
-  --text-stamp-year: 40px;
-  --text-slot: 11px;
-  --text-copy: 13px;
-  --text-feature: 32px;
-  --text-quote-mark: 54px;
-  --text-hero: clamp(64px, 9.5vw, 138px);
-  --text-booking: clamp(40px, 5vw, 70px);
+  --text-brand: 16px;
+  --text-eyebrow: 12px;
+  --text-micro: 11px;
+  --text-stamp: 10px;
+  --text-stamp-year: 44px;
+  --text-slot: 12px;
+  --text-copy: 15px;
+  --text-feature: 38px;
+  --text-quote-mark: 60px;
+  --text-hero: clamp(72px, 10vw, 148px);
+  --text-booking: clamp(48px, 5.5vw, 78px);
 
   --tracking-brand: -.02em;
   --tracking-eyebrow: .14em;

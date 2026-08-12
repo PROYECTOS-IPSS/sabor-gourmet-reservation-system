@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
+import { validateAuthForm } from '../services/authValidation';
 import { Button } from './ui/Button';
 import { FieldLabel } from './ui/FieldLabel';
 
@@ -18,6 +19,7 @@ interface FormValues {
 }
 
 const inputClassName = 'w-full cursor-text appearance-none border-0 bg-transparent p-0 text-base text-ink outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-label';
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 function responseMessage(data: unknown): string | null {
   if (typeof data !== 'object' || data === null || !('message' in data)) {
@@ -47,21 +49,30 @@ export function AuthForm({ mode }: AuthFormProps) {
     setValues((current) => ({ ...current, [field]: value }));
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus(null);
 
-    if (!isLogin) {
-      setStatus({
-        tone: 'info',
-        text: 'Registro visual disponible. Falta conectar endpoint de registro.',
-      });
+    const validationMessage = validateAuthForm(mode, values);
+    if (validationMessage) {
+      setStatus({ tone: 'error', text: validationMessage });
       return;
     }
 
+    const endpoint = isLogin ? 'login' : 'register';
+    const body = isLogin
+      ? { email: values.email, password: values.password }
+      : {
+          confirmPassword: values.confirmPassword,
+          email: values.email,
+          name: values.name,
+          password: values.password,
+        };
+
     try {
-      const response = await fetch('/login', {
-        body: JSON.stringify({ email: values.email, password: values.password }),
+      const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
+        body: JSON.stringify(body),
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
       });
@@ -70,17 +81,17 @@ export function AuthForm({ mode }: AuthFormProps) {
         throw new Error(await getResponseMessage(response));
       }
 
-      setStatus({ tone: 'success', text: 'Sesión iniciada correctamente.' });
+      setStatus({ tone: 'success', text: isLogin ? 'Sesión iniciada correctamente.' : 'Usuario registrado correctamente.' });
     } catch (error) {
       setStatus({
         tone: 'error',
-        text: error instanceof Error ? error.message : 'No se pudo iniciar sesión.',
+        text: error instanceof Error ? error.message : 'No se pudo completar la solicitud.',
       });
     }
   }
 
   return (
-    <form className="flex max-w-booking flex-col gap-6" onSubmit={handleSubmit}>
+    <form className="flex max-w-booking flex-col gap-6" noValidate onSubmit={handleSubmit}>
       {!isLogin && (
         <FieldLabel label="Nombre">
           <input
@@ -133,7 +144,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       </Button>
       {status && (
         <p
-          className={status.tone === 'error' ? 'text-label' : status.tone === 'success' ? 'text-gold' : 'text-panel-copy'}
+          className={status.tone === 'error' ? 'text-red-700' : status.tone === 'success' ? 'text-gold' : 'text-panel-copy'}
           role={status.tone === 'error' ? 'alert' : 'status'}
         >
           {status.text}

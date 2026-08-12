@@ -4,6 +4,7 @@ import session from 'express-session';
 import { env } from './config/env.js';
 import { errorMiddleware } from './middleware/error.middleware.js';
 import { healthRoutes } from './routes/health.routes.js';
+import { authRoutes } from './routes/auth.routes.js';
 
 export const app = express();
 
@@ -19,4 +20,5 @@ app.use(
 );
 
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use(errorMiddleware);

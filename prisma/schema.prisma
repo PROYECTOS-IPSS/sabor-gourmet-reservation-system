@@ -9,9 +9,9 @@ datasource db {
 
 enum UserRole {
   CUSTOMER
+  EMPLOYEE
   ADMIN
 }
-
 enum ReservationStatus {
   CONFIRMED
   CANCELLED

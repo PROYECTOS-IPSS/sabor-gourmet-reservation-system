@@ -3,9 +3,9 @@ import { AuthPage } from './components/AuthPage';
 import { BookingPanel } from './components/BookingPanel';
 import { FeatureGrid } from './components/FeatureGrid';
 import { HeroSection } from './components/HeroSection';
+import { ProtectedDashboard } from './components/ProtectedDashboard';
 import { ReservationPage } from './components/ReservationPage';
 import { PageShell } from './components/PageShell';
-
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
         <Route element={<PageShell><ReservationPage /></PageShell>} path="/reservar" />
         <Route element={<PageShell><AuthPage mode="register" /></PageShell>} path="/registrarse" />
         <Route element={<PageShell><AuthPage mode="login" /></PageShell>} path="/login" />
+        <Route element={<PageShell><ProtectedDashboard /></PageShell>} path="/dashboard" />
         <Route element={<PageShell />} path="*" />
       </Routes>
     </BrowserRouter>
@@ -31,3 +32,4 @@ function App() {
 }
 
 export default App;
+

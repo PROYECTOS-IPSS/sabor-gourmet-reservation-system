@@ -35,7 +35,8 @@ export async function login(request: Request, response: Response) {
   }
 
   request.session.user = { id: user.id, role: user.role };
-  response.json({ message: 'Sesión iniciada correctamente.', user: await findUserById(user.id) });
+  const publicUser = await findUserById(user.id);
+  response.json({ message: 'Sesión iniciada correctamente.', user: publicUser });
 }
 
 export async function currentUser(request: Request, response: Response) {

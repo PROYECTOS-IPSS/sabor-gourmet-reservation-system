@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { validateAuthForm } from '../services/authValidation';
-import { Button } from './ui/Button';
 import { FieldLabel } from './ui/FieldLabel';
+import { Button } from './ui/Button';
 
 type AuthMode = 'login' | 'register';
 type Status = { tone: 'error' | 'info' | 'success'; text: string } | null;
@@ -36,6 +36,7 @@ async function getResponseMessage(response: Response) {
 }
 
 export function AuthForm({ mode }: AuthFormProps) {
+  const navigate = useNavigate();
   const isLogin = mode === 'login';
   const [status, setStatus] = useState<Status>(null);
   const [values, setValues] = useState<FormValues>({
@@ -81,7 +82,13 @@ export function AuthForm({ mode }: AuthFormProps) {
         throw new Error(await getResponseMessage(response));
       }
 
-      setStatus({ tone: 'success', text: isLogin ? 'Sesión iniciada correctamente.' : 'Usuario registrado correctamente.' });
+      if (isLogin) {
+        const data = (await response.json()) as { user: { role: 'ADMIN' | 'EMPLOYEE' | 'CUSTOMER' } };
+        navigate(data.user.role === 'CUSTOMER' ? '/reservar' : '/dashboard', { replace: true });
+        return;
+      }
+
+      setStatus({ tone: 'success', text: 'Usuario registrado correctamente.' });
     } catch (error) {
       setStatus({
         tone: 'error',

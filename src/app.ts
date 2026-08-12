@@ -5,10 +5,19 @@ import { env } from './config/env.js';
 import { errorMiddleware } from './middleware/error.middleware.js';
 import { healthRoutes } from './routes/health.routes.js';
 import { authRoutes } from './routes/auth.routes.js';
+import { dashboardRoutes } from './routes/dashboard.routes.js';
 
 export const app = express();
 
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowedOrigins = [env.FRONTEND_URL, ...(env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:5174'] : [])];
+      callback(null, !origin || allowedOrigins.includes(origin) ? origin ?? true : false);
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(
   session({
@@ -21,4 +30,5 @@ app.use(
 
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 app.use(errorMiddleware);

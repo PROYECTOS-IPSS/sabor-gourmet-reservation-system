@@ -8,7 +8,7 @@ export function HeroSection() {
       id="experiencia"
     >
       <div>
-        <Eyebrow>Cocina de autor · Managua</Eyebrow>
+        <Eyebrow>La experiencia · Cocina de autor · Managua</Eyebrow>
         <h1 className="relative z-10 m-0 font-display text-hero font-medium leading-display tracking-display">
           Una mesa para
           <br />

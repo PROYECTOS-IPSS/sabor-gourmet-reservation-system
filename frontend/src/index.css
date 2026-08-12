@@ -85,26 +85,38 @@
   --text-hero: clamp(72px, 10vw, 148px);
   --text-booking: clamp(48px, 5.5vw, 78px);
 
-  --tracking-brand: -.02em;
-  --tracking-eyebrow: .14em;
-  --tracking-display: -.075em;
-  --tracking-stamp: .1em;
-  --tracking-display-tight: -.08em;
-  --tracking-link: .07em;
-  --tracking-label: .12em;
-  --tracking-heading: -.06em;
-  --tracking-feature: -.05em;
-  --tracking-footer: .06em;
+  --tracking-brand: -0.02em;
+  --tracking-eyebrow: 0.14em;
+  --tracking-display: -0.075em;
+  --tracking-stamp: 0.1em;
+  --tracking-display-tight: -0.08em;
+  --tracking-link: 0.07em;
+  --tracking-label: 0.12em;
+  --tracking-heading: -0.06em;
+  --tracking-feature: -0.05em;
+  --tracking-footer: 0.06em;
 
-  --leading-display: .85;
+  --leading-display: 0.85;
   --leading-copy: 1.7;
   --leading-panel: 1.55;
-  --leading-feature: .95;
+  --leading-feature: 0.95;
   --leading-feature-copy: 1.6;
-  --leading-heading: .9;
+  --leading-heading: 0.9;
   --leading-quote: 1.2;
 
   --rotate-stamp: 12deg;
+  --animate-table-detail: table-detail-in 240ms ease-out both;
+
+  @keyframes table-detail-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @utility grid-cols-booking {
@@ -112,11 +124,26 @@
 }
 
 @layer base {
-  html { scroll-behavior: smooth; }
-  body { min-width: 320px; }
-  button, a { -webkit-tap-highlight-color: transparent; }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    min-width: 320px;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

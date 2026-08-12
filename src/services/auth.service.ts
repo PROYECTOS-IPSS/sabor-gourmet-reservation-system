@@ -9,6 +9,7 @@ export async function registerCustomer(input: RegisterInput) {
   const passwordHash = await bcrypt.hash(input.password, salt);
 
   return createCustomerUser({
+    apellido: input.apellido,
     email: input.email.toLowerCase(),
     name: input.name,
     passwordHash,

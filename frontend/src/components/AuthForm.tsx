@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { validateAuthForm } from '../services/authValidation';
 import { FieldLabel } from './ui/FieldLabel';
 import { Button } from './ui/Button';
+import { notifySessionChange } from '../services/session';
 
 type AuthMode = 'login' | 'register';
 type Status = { tone: 'error' | 'info' | 'success'; text: string } | null;
@@ -10,8 +11,8 @@ type Status = { tone: 'error' | 'info' | 'success'; text: string } | null;
 interface AuthFormProps {
   mode: AuthMode;
 }
-
 interface FormValues {
+  apellido: string;
   confirmPassword: string;
   email: string;
   name: string;
@@ -39,12 +40,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const navigate = useNavigate();
   const isLogin = mode === 'login';
   const [status, setStatus] = useState<Status>(null);
-  const [values, setValues] = useState<FormValues>({
-    confirmPassword: '',
-    email: '',
-    name: '',
-    password: '',
-  });
+  const [values, setValues] = useState<FormValues>({ apellido: '', confirmPassword: '', email: '', name: '', password: '' });
 
   function updateValue(field: keyof FormValues, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -63,12 +59,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     const endpoint = isLogin ? 'login' : 'register';
     const body = isLogin
       ? { email: values.email, password: values.password }
-      : {
-          confirmPassword: values.confirmPassword,
-          email: values.email,
-          name: values.name,
-          password: values.password,
-        };
+      : { apellido: values.apellido, confirmPassword: values.confirmPassword, email: values.email, name: values.name, password: values.password };
 
     try {
       const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
@@ -85,10 +76,14 @@ export function AuthForm({ mode }: AuthFormProps) {
       if (isLogin) {
         const data = (await response.json()) as { user: { role: 'ADMIN' | 'EMPLOYEE' | 'CUSTOMER' } };
         navigate(data.user.role === 'CUSTOMER' ? '/reservar' : '/dashboard', { replace: true });
+        notifySessionChange();
         return;
       }
 
+      const data = isLogin ? null : (await response.json()) as { user: { name: string; email: string } };
       setStatus({ tone: 'success', text: 'Usuario registrado correctamente.' });
+      if (!isLogin && data) navigate('/reservar', { replace: true });
+      notifySessionChange();
     } catch (error) {
       setStatus({
         tone: 'error',
@@ -99,18 +94,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <form className="flex max-w-booking flex-col gap-6" noValidate onSubmit={handleSubmit}>
-      {!isLogin && (
-        <FieldLabel label="Nombre">
-          <input
-            className={inputClassName}
-            name="name"
-            onChange={(event) => updateValue('name', event.target.value)}
-            required
-            type="text"
-            value={values.name}
-          />
-        </FieldLabel>
-      )}
+      {!isLogin && <div className="contents"><FieldLabel label="Nombre"><input className={inputClassName} name="name" onChange={(event) => updateValue('name', event.target.value)} required type="text" value={values.name} /></FieldLabel><FieldLabel label="Apellido"><input className={inputClassName} name="apellido" onChange={(event) => updateValue('apellido', event.target.value)} required type="text" value={values.apellido} /></FieldLabel></div>}
       <FieldLabel label="Correo">
         <input
           className={inputClassName}

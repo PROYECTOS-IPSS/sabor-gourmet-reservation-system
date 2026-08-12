@@ -4,6 +4,7 @@ import { prisma } from './prisma.js';
 const publicUserSelect = {
   id: true,
   name: true,
+  apellido: true,
   email: true,
   role: true,
   createdAt: true,
@@ -12,19 +13,15 @@ const publicUserSelect = {
 export interface PublicUser {
   id: number;
   name: string;
+  apellido: string;
   email: string;
   role: UserRole;
   createdAt: Date;
 }
 
-export function createCustomerUser(data: { name: string; email: string; passwordHash: string }): Promise<PublicUser> {
+export function createCustomerUser(data: { name: string; apellido: string; email: string; passwordHash: string; role?: UserRole }): Promise<PublicUser> {
   return prisma.user.create({
-    data: {
-      name: data.name,
-      email: data.email,
-      passwordHash: data.passwordHash,
-      role: 'CUSTOMER',
-    },
+    data: { name: data.name, apellido: data.apellido, email: data.email, passwordHash: data.passwordHash, role: data.role ?? 'CUSTOMER' },
     select: publicUserSelect,
   });
 }

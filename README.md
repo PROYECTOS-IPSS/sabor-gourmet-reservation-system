@@ -7,14 +7,16 @@ Aplicación web de reservas de mesas para el restaurante Sabor Gourmet.
 El MVP permite:
 
 - consultar disponibilidad sin registrarse;
-- crear reservas públicas;
+- registrarse e iniciar sesión como cliente;
+- crear, modificar y cancelar reservas propias;
 - asignar automáticamente una mesa compatible;
 - mostrar un código de confirmación;
-- administrar reservas y mesas desde un panel protegido.
+- administrar cualquier reserva y gestionar mesas desde un panel protegido.
 
-Solo el administrador inicia sesión. El cliente no tiene cuenta en esta versión.
+El visitante consulta disponibilidad sin cuenta. El cliente se autentica para reservar y gestionar sus reservas. El administrador tiene control total.
 
-El alcance funcional está definido en [`docs/BRIEF.md`](docs/BRIEF.md). Las reglas de desarrollo están en [`AGENTS.md`](AGENTS.md).
+El alcance funcional está en [`docs/BRIEF.md`](docs/BRIEF.md), las reglas de desarrollo en [`AGENTS.md`](AGENTS.md) y el diseño visual en [`docs/DESIGN.md`](docs/DESIGN.md).
+
 
 ## Estado actual
 
@@ -28,7 +30,7 @@ El repositorio es un scaffold inicial. Actualmente incluye:
 - TailwindCSS configurado mediante Vite;
 - Docker Compose para PostgreSQL local.
 
-Todavía falta implementar la lógica del MVP: disponibilidad real, reservas, autenticación administrativa, panel admin y gestión de mesas.
+Todavía falta implementar la lógica del MVP: disponibilidad real, autenticación de clientes y administrador, reservas, panel admin y gestión de mesas.
 
 ## Arquitectura MVC
 
@@ -89,11 +91,11 @@ sabor-gourmet/
 
 Las carpetas `controllers`, `services` y `schemas` se agregarán cuando se implementen las funcionalidades correspondientes. No se crean capas vacías.
 
-## Reserva pública
+## Reserva
 
-La reserva no requiere `userId` de cliente. Guarda directamente nombre, apellido, email, fecha, horario, cantidad de personas, mesa y código de confirmación.
+La reserva requiere `userId` del cliente autenticado. Los datos de contacto (nombre, email) se toman del perfil de `User`.
 
-`User` queda reservado para la cuenta administrativa. El esquema Prisma actual todavía contiene una relación obligatoria `Reservation.userId`; debe alinearse antes de implementar reservas públicas reales.
+Cada reserva genera un `confirmationCode` único al confirmarse. El esquema Prisma actual ya contiene la relación `Reservation.userId → User`. Solo falta agregar el campo `confirmationCode`.
 
 ## Instalación
 
@@ -160,10 +162,10 @@ yarn build
 
 ## Fuera del MVP
 
-- cuentas de clientes;
-- edición o cancelación por clientes;
-- emails, SMS y recordatorios;
-- pagos;
-- pedidos, delivery y menú;
-- plano visual del salón;
-- reportes y estadísticas.
+- Reservas sin cuenta de cliente.
+- Modificación o cancelación sin autenticación.
+- Emails, SMS y recordatorios.
+- Pagos.
+- Pedidos, delivery y menú.
+- Plano visual del salón.
+- Reportes y estadísticas.

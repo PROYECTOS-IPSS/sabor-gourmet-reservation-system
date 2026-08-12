@@ -16,6 +16,7 @@ Si hay una contradicción, informar antes de implementar. No agregar alcance por
 - Frontend: React, TypeScript, TailwindCSS y Vite.
 - Validación: Zod.
 - Seguridad: `bcryptjs` y `express-session`.
+
 - Desarrollo: Yarn, `tsx watch`, ESLint, Prettier y Vitest.
 - Docker Compose es opcional.
 
@@ -38,10 +39,9 @@ PostgreSQL
 ```
 
 ### Frontend
-
 React contiene vistas, componentes y estado de interfaz. No decide de forma definitiva disponibilidad, permisos ni estado de reservas.
 
-Las vistas nuevas deben ser responsive, accesibles con teclado y construidas con TailwindCSS. Para cambios visuales consultar `skill://frontend-design`.
+Las vistas nuevas deben ser responsive, accesibles con teclado y construidas con TailwindCSS. Para cambios visuales leer `docs/DESIGN.md` y consultar `skill://frontend-design`.
 
 ### Routes
 
@@ -53,7 +53,7 @@ Recibe la petición HTTP, usa datos validados, llama al service y devuelve JSON.
 
 ### Services
 
-Contiene la lógica de negocio: disponibilidad, asignación de mesa, creación, edición, cancelación y autenticación de administrador.
+Contiene la lógica de negocio: disponibilidad, asignación de mesa, creación, edición, cancelación, registro de clientes y autenticación.
 
 ### Models
 
@@ -65,7 +65,7 @@ Contiene esquemas Zod para validar `body`, `params` y `query`.
 
 ### Middleware
 
-Contiene validación, sesión, autorización de administrador y manejo de errores.
+Contiene validación, sesión, autorización de clientes, autorización de administrador y manejo de errores.
 
 ## Estructura mínima
 
@@ -97,12 +97,13 @@ Crear archivos solo cuando una funcionalidad los necesite. Reutilizar patrones e
 
 ## Reglas técnicas del MVP
 
-- Las reservas públicas no requieren cuenta, sesión ni `userId` de cliente.
-- Solo el administrador usa autenticación y sesión.
-- `User` representa únicamente cuentas administrativas en este MVP.
-- `Reservation` guarda nombre, apellido y email directamente.
-- No crear usuarios falsos para reservas públicas.
-- El administrador inicial se crea con `prisma seed`.
+- La disponibilidad es pública. No requiere autenticación.
+- Crear, modificar y cancelar reservas requiere cliente autenticado.
+- Un cliente solo puede gestionar sus propias reservas.
+- El administrador puede gestionar cualquier reserva.
+- Los roles son `CUSTOMER` y `ADMIN`. El admin inicial se crea con `prisma seed`.
+- `Reservation` tiene `userId` obligatorio. Los datos de contacto se toman de `User`.
+- Cada reserva genera un `confirmationCode` único.
 - El servidor asigna automáticamente la mesa.
 - Cada reserva dura 90 minutos.
 - Los horarios comienzan cada 30 minutos, de miércoles a domingo.
@@ -112,17 +113,13 @@ Crear archivos solo cuando una funcionalidad los necesite. Reutilizar patrones e
 - Cancelar cambia a `CANCELLED`; no se hace hard delete.
 - No implementar funciones fuera del brief.
 
-### Modelo de reserva pública
-
-Una reserva pública es válida sin usuario porque identifica al cliente mediante datos de contacto, no mediante autenticación:
+### Modelo de reserva
 
 ```text
 Reservation
-├── firstName
-├── lastName
-├── email
 ├── confirmationCode
-├── tableId
+├── userId       → User autenticado
+├── tableId      → Table asignada
 ├── date
 ├── startTime
 ├── endTime
@@ -130,16 +127,13 @@ Reservation
 └── status
 ```
 
-En este MVP no debe existir una relación obligatoria `Reservation.userId -> User`. `User` queda reservado para la sesión del administrador.
-
-## Validación y seguridad
-
 - Validar con Zod todo `req.body`, `req.params` y `req.query`.
 - Nunca confiar en datos enviados por React.
 - No usar `any` sin justificación.
 - Guardar contraseñas solo como hash con `bcryptjs`.
-- Proteger únicamente las rutas administrativas con sesión y autorización.
-- Las rutas públicas de disponibilidad y creación no requieren sesión.
+- Proteger las rutas de cliente con sesión y autorización.
+- Proteger las rutas administrativas con sesión y rol `ADMIN`.
+- La ruta de disponibilidad es pública y no requiere sesión.
 - El cliente no puede decidir rol, estado, disponibilidad ni mesa.
 - No registrar contraseñas, sesiones ni secretos.
 - Mantener secretos en variables de entorno.
@@ -174,7 +168,7 @@ El código debe ser:
 ## Git y trabajo colaborativo
 
 - No trabajar directamente sobre `main`.
-- Usar ramas descriptivas según el cambio, por ejemplo `feat/public-reservation`, `feat/admin-reservations`, `feat/table-management` o `fix/availability`.
+- Usar ramas descriptivas según el cambio, por ejemplo `feat/autenticacion`, `feat/reservas`, `feat/admin-panel`, `feat/gestion-mesas` o `fix/disponibilidad`.
 - Mantener commits pequeños y descriptivos.
 - Coordinar cambios en `prisma/schema.prisma` y sus migraciones.
 - No mezclar formateo masivo con funcionalidades.
@@ -184,9 +178,9 @@ El código debe ser:
 Antes de editar:
 
 1. Leer `docs/BRIEF.md` y esta guía.
-2. Revisar código relacionado y patrones existentes.
-3. Localizar referencias afectadas.
-4. Consultar documentación oficial de cualquier librería o API desconocida mediante MCP Context7 o web search.
+2. Leer `docs/DESIGN.md` si la tarea afecta la interfaz.
+3. Revisar código relacionado y patrones existentes.
+4. Localizar referencias afectadas.
 
 Al implementar:
 
@@ -205,7 +199,7 @@ Al implementar:
 - [ ] Routes sin lógica de negocio ni Prisma.
 - [ ] Services con reglas de negocio.
 - [ ] Models con acceso a Prisma.
-- [ ] Rutas administrativas protegidas.
+- [ ] Rutas de cliente protegidas con sesión.
 - [ ] No existe hard delete.
 - [ ] No se permiten reservas superpuestas.
 - [ ] Interfaz usable en móvil y escritorio.
@@ -219,8 +213,7 @@ No:
 - acceder a Prisma desde routes, controllers o React;
 - omitir Zod;
 - guardar contraseñas sin hash;
-- confiar en el frontend;
 - eliminar reservas físicamente;
-- agregar cuentas de clientes, notificaciones, pagos o reportes al MVP;
+- agregar notificaciones, pagos o reportes al MVP;
 - agregar dependencias sin necesidad;
 - dejar implementaciones falsas o incompletas.

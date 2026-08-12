@@ -2,47 +2,49 @@
 
 ## Objetivo
 
-Crear una aplicación web sencilla para reservar mesas del restaurante y permitir que un administrador gestione reservas y mesas.
+Crear una aplicación web para reservar mesas del restaurante Sabor Gourmet con autenticación de clientes y un panel administrativo.
 
 Este documento define únicamente el MVP.
 
 ## Usuarios
 
-### Cliente público
+### Visitante
 
-No necesita registrarse, iniciar sesión ni tener un `userId`. Puede:
+Sin necesidad de cuenta, puede:
 
-- consultar disponibilidad;
-- indicar sus datos y cantidad de personas;
-- crear una reserva;
-- ver una confirmación con código.
+- consultar disponibilidad de mesas por fecha, horario y cantidad de personas.
 
-En el MVP no puede editar ni cancelar reservas.
+Para reservar, modificar o cancelar debe registrarse e iniciar sesión.
 
-La reserva guarda los datos de contacto directamente. No se crea un usuario falso para representar al cliente.
+### Cliente
+
+Se registra, inicia sesión y puede:
+
+- crear reservas;
+- consultar sus reservas;
+- modificar sus propias reservas;
+- cancelar sus propias reservas.
+
+Los datos de contacto (nombre y email) se toman de su perfil de usuario.
 
 ### Administrador
 
 Inicia sesión y puede:
 
-- listar, crear, editar y cancelar reservas;
+- listar, crear, editar y cancelar cualquier reserva;
 - crear y editar mesas;
-- activar o desactivar mesas.
+- configurar la capacidad de las mesas;
+- activar o desactivar mesas;
+- ver las reservas actuales del restaurante.
 
-Solo el administrador necesita una cuenta.
+## Flujo de reserva
 
-## Reserva pública
-
-El flujo es:
-
-1. Elegir fecha.
-2. Elegir un horario disponible.
-3. Indicar cantidad de personas.
-4. Indicar nombre, apellido y email.
-5. Confirmar la reserva.
-6. Mostrar código de confirmación.
-
-El cliente no elige mesa. El sistema asigna automáticamente una mesa activa con capacidad suficiente.
+1. El visitante elige fecha, horario y cantidad de personas.
+2. El sistema muestra las mesas disponibles.
+3. Para confirmar, el sistema solicita registro o inicio de sesión.
+4. El cliente autenticado confirma la reserva.
+5. El sistema asigna automáticamente una mesa activa con capacidad suficiente.
+6. Se muestra un código único de confirmación.
 
 ## Reglas de disponibilidad
 
@@ -55,24 +57,42 @@ El cliente no elige mesa. El sistema asigna automáticamente una mesa activa con
 - Máximo: capacidad de la mesa asignada.
 - No se aceptan fechas u horarios pasados.
 - No se aceptan reservas superpuestas en una misma mesa.
-- La disponibilidad se valida nuevamente en el servidor al guardar.
+- La disponibilidad se valida en el servidor al guardar y al modificar.
 
-Las reservas públicas y las creadas por el administrador usan las mismas reglas.
+Las reservas de clientes y las creadas por el administrador usan las mismas reglas.
 
-## Datos mínimos
+## Reserva
 
-### Reservation
+Una reserva pertenece a un cliente autenticado y a una mesa. Sus datos son:
 
-- código único;
-- nombre, apellido y email del cliente;
+- código único de confirmación;
+- cliente (referencia al `User` autenticado);
+- mesa asignada;
 - fecha;
 - hora de inicio y fin;
 - cantidad de personas;
-- mesa asignada;
 - estado: `CONFIRMED` o `CANCELLED`;
 - fechas de creación y actualización.
 
-Una `Reservation` pública no tiene `userId` ni relación obligatoria con `User`. El contacto se guarda en la propia reserva.
+Los datos de contacto (nombre, email) se obtienen del perfil del usuario. No se duplican en la reserva.
+
+## Modificación y cancelación
+
+- El cliente solo puede modificar o cancelar sus propias reservas.
+- El administrador puede modificar o cancelar cualquier reserva.
+- Modificar una reserva vuelve a ejecutar todas las reglas de disponibilidad.
+- Cancelar cambia el estado a `CANCELLED`; no se elimina físicamente el registro.
+- No se permite modificar ni cancelar reservas pasadas.
+
+## Datos mínimos
+
+### User
+
+- nombre;
+- email único;
+- hash de contraseña;
+- rol: `CUSTOMER` o `ADMIN`;
+- fechas de creación y actualización.
 
 ### Table
 
@@ -81,31 +101,36 @@ Una `Reservation` pública no tiene `userId` ni relación obligatoria con `User`
 - activa o inactiva;
 - fechas de creación y actualización.
 
-### Admin User
+### Reservation
 
-- email;
-- hash de contraseña;
-- rol administrador.
-
-`User` se utiliza únicamente para el administrador en este MVP. El administrador inicial se crea con el seed de Prisma. No existen cuentas de clientes.
+- código único de confirmación;
+- cliente (`userId`);
+- mesa (`tableId`);
+- fecha;
+- hora de inicio y fin;
+- cantidad de personas;
+- estado;
+- fechas de creación y actualización.
 
 ## Criterios de aceptación
 
-- Se puede reservar sin registrarse.
-- El sistema asigna una mesa compatible y activa.
+- Cualquier persona puede consultar disponibilidad sin registrarse.
+- Un visitante puede registrarse, iniciar sesión y crear una reserva.
+- El sistema asigna una mesa compatible y activa automáticamente.
 - Se rechazan datos inválidos, horarios fuera de atención, fechas pasadas y falta de disponibilidad.
 - No se pueden confirmar reservas superpuestas.
-- El administrador puede iniciar sesión.
-- El administrador puede crear, listar, editar y cancelar reservas.
-- El administrador puede crear, editar, activar y desactivar mesas.
-- Cancelar cambia el estado; no borra físicamente la reserva.
-- La confirmación muestra un código único.
+- Un cliente solo puede modificar o cancelar sus propias reservas.
+- Un cliente no puede acceder ni modificar reservas de otros clientes.
+- El administrador puede crear, listar, editar y cancelar cualquier reserva.
+- El administrador puede crear, editar, activar, desactivar y configurar la capacidad de las mesas.
+- Cancelar cambia el estado de la reserva; no la borra físicamente.
+- La confirmación de reserva muestra un código único.
 - La interfaz funciona en móvil y escritorio.
 
 ## Fuera del MVP
 
-- Cuentas de clientes.
-- Edición o cancelación por clientes.
+- Reservas sin cuenta de cliente.
+- Modificación o cancelación sin autenticación.
 - Emails, SMS y recordatorios.
 - Pagos.
 - Pedidos, delivery y menú.

@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, NavLink } from 'react-router';
 
 export function Navigation() {
   return (
@@ -17,15 +17,18 @@ export function Navigation() {
         <span>Sabor Gourmet</span>
       </Link>
       <div className="flex items-center gap-8 text-sm text-muted max-phone:mt-4 max-phone:w-full max-phone:justify-end max-phone:gap-2">
-        <Link className="hover:text-gold max-phone:hidden" to="/carta">
+        <a className="hover:text-gold max-phone:hidden" href="/#carta">
           La carta
-        </Link>
-        <Link className="hover:text-gold max-phone:hidden" to="/experiencia">
+        </a>
+        <a className="hover:text-gold max-phone:hidden" href="/#experiencia">
           La experiencia
-        </Link>
-        <Link className="border border-brown-line px-4 py-cta-y text-cream" to="/reservar">
-          Reservar mesa <span className="ml-2 text-gold">↗</span>
-        </Link>
+        </a>
+        <NavLink
+          className={({ isActive }) => `border px-4 py-cta-y ${isActive ? 'border-gold bg-gold text-ink' : 'border-brown-line text-cream'}`}
+          to="/reservar"
+        >
+          Reservar mesa <span className="ml-2">↗</span>
+        </NavLink>
         <Link className="border border-brown-line px-4 py-cta-y text-cream" to="/registrarse">
           Registrarse
         </Link>

@@ -3,6 +3,7 @@ import { AuthPage } from './components/AuthPage';
 import { BookingPanel } from './components/BookingPanel';
 import { FeatureGrid } from './components/FeatureGrid';
 import { HeroSection } from './components/HeroSection';
+import { ReservationPage } from './components/ReservationPage';
 import { PageShell } from './components/PageShell';
 
 
@@ -20,9 +21,7 @@ function App() {
           }
           path="/"
         />
-        <Route element={<PageShell />} path="/carta" />
-        <Route element={<PageShell />} path="/experiencia" />
-        <Route element={<PageShell />} path="/reservar" />
+        <Route element={<PageShell><ReservationPage /></PageShell>} path="/reservar" />
         <Route element={<PageShell><AuthPage mode="register" /></PageShell>} path="/registrarse" />
         <Route element={<PageShell><AuthPage mode="login" /></PageShell>} path="/login" />
         <Route element={<PageShell />} path="*" />

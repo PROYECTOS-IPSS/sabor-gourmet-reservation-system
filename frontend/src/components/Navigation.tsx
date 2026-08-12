@@ -1,29 +1,37 @@
+import { Link } from 'react-router';
+
 export function Navigation() {
   return (
     <nav
-      className="flex items-center justify-between border-b border-line px-nav py-7 max-phone:py-5"
+      className="flex items-center justify-between border-b border-line px-nav py-7 max-phone:flex-wrap max-phone:py-5"
       aria-label="Navegación principal"
     >
-      <a
+      <Link
         className="flex items-center gap-3 text-brand font-semibold tracking-brand"
-        href="/"
+        to="/"
         aria-label="Sabor Gourmet, inicio"
       >
         <span className="inline-flex size-mark items-center justify-center rounded-full bg-gold font-display text-xs text-ink">
           SG
         </span>
         <span>Sabor Gourmet</span>
-      </a>
-      <div className="flex items-center gap-8 text-xs text-muted">
-        <a className="hover:text-gold max-phone:hidden" href="#carta">
+      </Link>
+      <div className="flex items-center gap-8 text-sm text-muted max-phone:mt-4 max-phone:w-full max-phone:justify-end max-phone:gap-2">
+        <Link className="hover:text-gold max-phone:hidden" to="/carta">
           La carta
-        </a>
-        <a className="hover:text-gold max-phone:hidden" href="#experiencia">
+        </Link>
+        <Link className="hover:text-gold max-phone:hidden" to="/experiencia">
           La experiencia
-        </a>
-        <a className="border border-brown-line px-4 py-cta-y text-cream" href="#reservar">
+        </Link>
+        <Link className="border border-brown-line px-4 py-cta-y text-cream" to="/reservar">
           Reservar mesa <span className="ml-2 text-gold">↗</span>
-        </a>
+        </Link>
+        <Link className="border border-brown-line px-4 py-cta-y text-cream" to="/registrarse">
+          Registrarse
+        </Link>
+        <Link className="border border-gold bg-gold px-4 py-cta-y text-ink" to="/login">
+          Iniciar sesión
+        </Link>
       </div>
     </nav>
   );

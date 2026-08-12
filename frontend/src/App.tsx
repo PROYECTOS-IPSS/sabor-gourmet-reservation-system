@@ -1,18 +1,33 @@
+import { BrowserRouter, Route, Routes } from 'react-router';
+import { AuthPage } from './components/AuthPage';
 import { BookingPanel } from './components/BookingPanel';
 import { FeatureGrid } from './components/FeatureGrid';
-import { Footer } from './components/Footer';
 import { HeroSection } from './components/HeroSection';
-import { Navigation } from './components/Navigation';
+import { PageShell } from './components/PageShell';
+
 
 function App() {
   return (
-    <main className="mx-auto min-h-screen max-w-site overflow-hidden bg-ink font-sans text-cream">
-      <Navigation />
-      <HeroSection />
-      <BookingPanel />
-      <FeatureGrid />
-      <Footer />
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          element={
+            <PageShell>
+              <HeroSection />
+              <BookingPanel />
+              <FeatureGrid />
+            </PageShell>
+          }
+          path="/"
+        />
+        <Route element={<PageShell />} path="/carta" />
+        <Route element={<PageShell />} path="/experiencia" />
+        <Route element={<PageShell />} path="/reservar" />
+        <Route element={<PageShell><AuthPage mode="register" /></PageShell>} path="/registrarse" />
+        <Route element={<PageShell><AuthPage mode="login" /></PageShell>} path="/login" />
+        <Route element={<PageShell />} path="*" />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

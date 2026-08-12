@@ -13,7 +13,7 @@ export function FeatureCard({ description, number, title }: FeatureCardProps) {
       <h3 className="m-0 mb-feature-title-bottom mt-feature-title-top font-display text-feature font-medium leading-feature tracking-feature">
         {title}
       </h3>
-      <p className="m-0 max-w-feature text-xs leading-feature-copy text-copy-muted">{description}</p>
+      <p className="m-0 max-w-feature text-sm leading-feature-copy text-copy-muted">{description}</p>
     </article>
   );
 }

@@ -11,9 +11,9 @@ function isUniqueEmailError(error: unknown) {
 
 export async function register(request: Request, response: Response, next: NextFunction) {
   const input = request.body as RegisterInput;
-
   try {
     const user = await registerCustomer(input);
+    request.session.user = { id: user.id, role: user.role };
     response.status(201).json({ message: 'Usuario registrado correctamente.', user });
   } catch (error) {
     if (isUniqueEmailError(error)) {
@@ -25,18 +25,23 @@ export async function register(request: Request, response: Response, next: NextF
   }
 }
 
-export async function login(request: Request, response: Response) {
-  const input = request.body as LoginInput;
-  const user = await authenticateUser(input);
-
-  if (!user) {
-    response.status(401).json({ message: loginErrorMessage });
-    return;
+export async function login(request: Request, response: Response, next: NextFunction) {
+  try {
+    const input = request.body as LoginInput;
+    const user = await authenticateUser(input);
+    if (!user) {
+      response.status(401).json({ message: loginErrorMessage });
+      return;
+    }
+    request.session.user = { id: user.id, role: user.role };
+    const publicUser = await findUserById(user.id);
+    response.json({ message: 'Sesión iniciada correctamente.', user: publicUser });
+  } catch (error) {
+    next(error);
   }
-
-  request.session.user = { id: user.id, role: user.role };
-  const publicUser = await findUserById(user.id);
-  response.json({ message: 'Sesión iniciada correctamente.', user: publicUser });
+}
+export function logout(request: Request, response: Response) {
+  request.session.destroy(() => response.json({ message: 'Sesión cerrada correctamente.' }));
 }
 
 export async function currentUser(request: Request, response: Response) {

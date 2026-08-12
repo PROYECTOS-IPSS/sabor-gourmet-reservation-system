@@ -1,4 +1,3 @@
-import { availableDates, restaurantHours } from './data/restaurantSchedule';
 import { Button } from './ui/Button';
 
 const tables = Array.from({ length: 40 }, (_, index) => index + 1);
@@ -40,25 +39,12 @@ export function RestaurantMap({ onSelectTable, selectedTable }: RestaurantMapPro
               <p className="mb-2 font-mono text-micro uppercase tracking-label text-gold">Detalle de mesa</p>
               <h3 className="m-0 font-display text-feature font-medium leading-heading tracking-heading">Mesa {selectedTable}</h3>
             </div>
-            <span className="font-mono text-micro uppercase tracking-label text-gold">Disponible</span>
+            <span className="font-mono text-micro uppercase tracking-label text-gold">Activa</span>
           </div>
-          <p className="mb-3 mt-6 font-mono text-micro uppercase tracking-label text-muted">Horarios disponibles</p>
-          <dl className="m-0 border-t border-line">
-            {restaurantHours.map(({ day, hours }) => (
-              <div className="flex items-center justify-between gap-4 border-b border-line py-3" key={day}>
-                <dt className="text-sm text-muted">{day}</dt>
-                <dd className="m-0 font-mono text-sm text-cream">{hours}</dd>
-              </div>
-            ))}
+          <dl className="mt-6 border-t border-line">
+            <div className="flex justify-between border-b border-line py-3"><dt className="text-sm text-muted">Capacidad</dt><dd className="m-0 text-sm text-cream">Consulta disponibilidad para confirmar</dd></div>
+            <div className="flex justify-between border-b border-line py-3"><dt className="text-sm text-muted">Estado</dt><dd className="m-0 text-sm text-cream">Activa</dd></div>
           </dl>
-          <p className="mb-3 mt-6 font-mono text-micro uppercase tracking-label text-muted">Fechas disponibles</p>
-          <div className="flex flex-wrap gap-2">
-            {availableDates.map((date) => (
-              <span className="border border-brown-line px-3 py-2 font-mono text-micro text-muted" key={date}>
-                {date}
-              </span>
-            ))}
-          </div>
         </div>
       )}
     </div>

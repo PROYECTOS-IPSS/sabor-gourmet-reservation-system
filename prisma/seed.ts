@@ -10,19 +10,19 @@ async function main() {
 
   const users = await Promise.all(
     [
-      { name: 'Administrador', email: 'admin@saborgourmet.local', role: 'ADMIN' as const },
-      { name: 'María Encargada', email: 'empleado@saborgourmet.local', role: 'EMPLOYEE' as const },
-      { name: 'Carlos Cliente', email: 'carlos@saborgourmet.local', role: 'CUSTOMER' as const },
-      { name: 'Ana Cliente', email: 'ana@saborgourmet.local', role: 'CUSTOMER' as const },
-      { name: 'Luis Cliente', email: 'luis@saborgourmet.local', role: 'CUSTOMER' as const },
-      { name: 'Sofía Cliente', email: 'sofia@saborgourmet.local', role: 'CUSTOMER' as const },
-      { name: 'Diego Cliente', email: 'diego@saborgourmet.local', role: 'CUSTOMER' as const },
-      { name: 'Elena Cliente', email: 'elena@saborgourmet.local', role: 'CUSTOMER' as const },
-      { name: 'Pablo Cliente', email: 'pablo@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Administrador', apellido: 'General', email: 'admin@saborgourmet.local', role: 'ADMIN' as const },
+      { name: 'María', apellido: 'Encargada', email: 'empleado@saborgourmet.local', role: 'EMPLOYEE' as const },
+      { name: 'Carlos', apellido: 'Cliente', email: 'carlos@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Ana', apellido: 'Cliente', email: 'ana@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Luis', apellido: 'Cliente', email: 'luis@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Sofía', apellido: 'Cliente', email: 'sofia@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Diego', apellido: 'Cliente', email: 'diego@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Elena', apellido: 'Cliente', email: 'elena@saborgourmet.local', role: 'CUSTOMER' as const },
+      { name: 'Pablo', apellido: 'Cliente', email: 'pablo@saborgourmet.local', role: 'CUSTOMER' as const },
     ].map((user) =>
       prisma.user.upsert({
         where: { email: user.email },
-        update: { name: user.name, role: user.role },
+        update: { name: user.name, apellido: user.apellido, role: user.role },
         create: { ...user, passwordHash },
       }),
     ),

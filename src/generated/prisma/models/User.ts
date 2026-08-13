@@ -314,7 +314,7 @@ export type UserScalarWhereWithAggregatesInput = {
 
 export type UserCreateInput = {
   name: string
-  apellido: string
+  apellido?: string
   email: string
   passwordHash: string
   role?: $Enums.UserRole
@@ -327,7 +327,7 @@ export type UserCreateInput = {
 export type UserUncheckedCreateInput = {
   id?: number
   name: string
-  apellido: string
+  apellido?: string
   email: string
   passwordHash: string
   role?: $Enums.UserRole
@@ -365,7 +365,7 @@ export type UserUncheckedUpdateInput = {
 export type UserCreateManyInput = {
   id?: number
   name: string
-  apellido: string
+  apellido?: string
   email: string
   passwordHash: string
   role?: $Enums.UserRole
@@ -486,7 +486,7 @@ export type UserUpdateOneRequiredWithoutReservationsNestedInput = {
 
 export type UserCreateWithoutReservationsInput = {
   name: string
-  apellido: string
+  apellido?: string
   email: string
   passwordHash: string
   role?: $Enums.UserRole
@@ -498,7 +498,7 @@ export type UserCreateWithoutReservationsInput = {
 export type UserUncheckedCreateWithoutReservationsInput = {
   id?: number
   name: string
-  apellido: string
+  apellido?: string
   email: string
   passwordHash: string
   role?: $Enums.UserRole

@@ -49,6 +49,8 @@ export type ReservationMinAggregateOutputType = {
   endTime: Date | null
   guests: number | null
   status: $Enums.ReservationStatus | null
+  cancelledAt: Date | null
+  completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -63,6 +65,8 @@ export type ReservationMaxAggregateOutputType = {
   endTime: Date | null
   guests: number | null
   status: $Enums.ReservationStatus | null
+  cancelledAt: Date | null
+  completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -77,6 +81,8 @@ export type ReservationCountAggregateOutputType = {
   endTime: number
   guests: number
   status: number
+  cancelledAt: number
+  completedAt: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -107,6 +113,8 @@ export type ReservationMinAggregateInputType = {
   endTime?: true
   guests?: true
   status?: true
+  cancelledAt?: true
+  completedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -121,6 +129,8 @@ export type ReservationMaxAggregateInputType = {
   endTime?: true
   guests?: true
   status?: true
+  cancelledAt?: true
+  completedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -135,6 +145,8 @@ export type ReservationCountAggregateInputType = {
   endTime?: true
   guests?: true
   status?: true
+  cancelledAt?: true
+  completedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -236,6 +248,8 @@ export type ReservationGroupByOutputType = {
   endTime: Date
   guests: number
   status: $Enums.ReservationStatus
+  cancelledAt: Date | null
+  completedAt: Date | null
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -273,6 +287,8 @@ export type ReservationWhereInput = {
   endTime?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   guests?: Prisma.IntFilter<"Reservation"> | number
   status?: Prisma.EnumReservationStatusFilter<"Reservation"> | $Enums.ReservationStatus
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
@@ -289,6 +305,8 @@ export type ReservationOrderByWithRelationInput = {
   endTime?: Prisma.SortOrder
   guests?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -308,6 +326,8 @@ export type ReservationWhereUniqueInput = Prisma.AtLeast<{
   endTime?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   guests?: Prisma.IntFilter<"Reservation"> | number
   status?: Prisma.EnumReservationStatusFilter<"Reservation"> | $Enums.ReservationStatus
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
@@ -324,6 +344,8 @@ export type ReservationOrderByWithAggregationInput = {
   endTime?: Prisma.SortOrder
   guests?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -346,6 +368,8 @@ export type ReservationScalarWhereWithAggregatesInput = {
   endTime?: Prisma.DateTimeWithAggregatesFilter<"Reservation"> | Date | string
   guests?: Prisma.IntWithAggregatesFilter<"Reservation"> | number
   status?: Prisma.EnumReservationStatusWithAggregatesFilter<"Reservation"> | $Enums.ReservationStatus
+  cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Reservation"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Reservation"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Reservation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Reservation"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Reservation"> | Date | string | null
@@ -357,6 +381,8 @@ export type ReservationCreateInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -373,6 +399,8 @@ export type ReservationUncheckedCreateInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -384,6 +412,8 @@ export type ReservationUpdateInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -400,6 +430,8 @@ export type ReservationUncheckedUpdateInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -414,6 +446,8 @@ export type ReservationCreateManyInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -425,6 +459,8 @@ export type ReservationUpdateManyMutationInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -439,6 +475,8 @@ export type ReservationUncheckedUpdateManyInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -463,6 +501,8 @@ export type ReservationCountOrderByAggregateInput = {
   endTime?: Prisma.SortOrder
   guests?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -484,6 +524,8 @@ export type ReservationMaxOrderByAggregateInput = {
   endTime?: Prisma.SortOrder
   guests?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -498,6 +540,8 @@ export type ReservationMinOrderByAggregateInput = {
   endTime?: Prisma.SortOrder
   guests?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -604,6 +648,8 @@ export type ReservationCreateWithoutUserInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -618,6 +664,8 @@ export type ReservationUncheckedCreateWithoutUserInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -661,6 +709,8 @@ export type ReservationScalarWhereInput = {
   endTime?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   guests?: Prisma.IntFilter<"Reservation"> | number
   status?: Prisma.EnumReservationStatusFilter<"Reservation"> | $Enums.ReservationStatus
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Reservation"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
@@ -672,6 +722,8 @@ export type ReservationCreateWithoutTableInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -686,6 +738,8 @@ export type ReservationUncheckedCreateWithoutTableInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -725,6 +779,8 @@ export type ReservationCreateManyUserInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -736,6 +792,8 @@ export type ReservationUpdateWithoutUserInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -750,6 +808,8 @@ export type ReservationUncheckedUpdateWithoutUserInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -763,6 +823,8 @@ export type ReservationUncheckedUpdateManyWithoutUserInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -776,6 +838,8 @@ export type ReservationCreateManyTableInput = {
   endTime: Date | string
   guests: number
   status?: $Enums.ReservationStatus
+  cancelledAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -787,6 +851,8 @@ export type ReservationUpdateWithoutTableInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -801,6 +867,8 @@ export type ReservationUncheckedUpdateWithoutTableInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -814,6 +882,8 @@ export type ReservationUncheckedUpdateManyWithoutTableInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guests?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumReservationStatusFieldUpdateOperationsInput | $Enums.ReservationStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -830,6 +900,8 @@ export type ReservationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   endTime?: boolean
   guests?: boolean
   status?: boolean
+  cancelledAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -846,6 +918,8 @@ export type ReservationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   endTime?: boolean
   guests?: boolean
   status?: boolean
+  cancelledAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -862,6 +936,8 @@ export type ReservationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   endTime?: boolean
   guests?: boolean
   status?: boolean
+  cancelledAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -878,12 +954,14 @@ export type ReservationSelectScalar = {
   endTime?: boolean
   guests?: boolean
   status?: boolean
+  cancelledAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type ReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tableId" | "date" | "startTime" | "endTime" | "guests" | "status" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["reservation"]>
+export type ReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tableId" | "date" | "startTime" | "endTime" | "guests" | "status" | "cancelledAt" | "completedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["reservation"]>
 export type ReservationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
@@ -912,6 +990,8 @@ export type $ReservationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     endTime: Date
     guests: number
     status: $Enums.ReservationStatus
+    cancelledAt: Date | null
+    completedAt: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1348,6 +1428,8 @@ export interface ReservationFieldRefs {
   readonly endTime: Prisma.FieldRef<"Reservation", 'DateTime'>
   readonly guests: Prisma.FieldRef<"Reservation", 'Int'>
   readonly status: Prisma.FieldRef<"Reservation", 'ReservationStatus'>
+  readonly cancelledAt: Prisma.FieldRef<"Reservation", 'DateTime'>
+  readonly completedAt: Prisma.FieldRef<"Reservation", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Reservation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Reservation", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"Reservation", 'DateTime'>

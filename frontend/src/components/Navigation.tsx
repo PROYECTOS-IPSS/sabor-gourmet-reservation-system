@@ -21,6 +21,7 @@ export function Navigation() {
         <a className="hover:text-gold max-phone:hidden" href="/#carta">La carta</a>
         <a className="hover:text-gold max-phone:hidden" href="/#experiencia">La experiencia</a>
         <NavLink className={({ isActive }) => `border px-4 py-cta-y ${isActive ? 'border-gold bg-gold text-ink' : 'border-brown-line text-cream'}`} to="/reservar">Reservar mesa <span className="ml-2">↗</span></NavLink>
+        {!loading && user?.role === 'CUSTOMER' && <NavLink className={({ isActive }) => `border px-4 py-cta-y ${isActive ? 'border-gold bg-gold text-ink' : 'border-brown-line text-cream'}`} to="/mis-reservas">Mis Reservas</NavLink>}
         {!loading && !user && <><Link className="border border-brown-line px-4 py-cta-y text-cream" to="/registrarse">Registrarse</Link><Link className="border border-gold bg-gold px-4 py-cta-y text-ink" to="/login">Iniciar sesión</Link></>}
         {!loading && user && <button className="border border-gold bg-gold px-4 py-cta-y text-ink" onClick={handleLogout} type="button">Cerrar sesión</button>}
       </div>

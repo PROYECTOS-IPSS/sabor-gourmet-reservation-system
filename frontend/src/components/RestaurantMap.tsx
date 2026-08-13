@@ -9,7 +9,7 @@ interface RestaurantMapProps {
 
 export function RestaurantMap({ onSelectTable, selectedTable }: RestaurantMapProps) {
   return (
-    <div className="border border-line bg-note p-8 text-cream">
+    <div className="min-w-0 overflow-hidden border border-line bg-note p-8 text-cream max-phone:p-4">
       <div className="mb-8 flex items-center justify-between gap-4 border-b border-line pb-5">
         <div>
           <p className="mb-2 font-mono text-micro uppercase tracking-label text-gold">Distribución del salón</p>

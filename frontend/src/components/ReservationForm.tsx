@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { z } from 'zod';
 import { Button } from './ui/Button';
 import { Eyebrow } from './ui/Eyebrow';
@@ -20,9 +20,10 @@ interface ReservationValues {
   date: string;
   guests: string;
   startTime: string;
+  tableNumber: string;
 }
 
-type Status = { tone: 'error' | 'success'; text: string } | null;
+type Status = { tone: 'error' | 'success'; text: string; table?: { number: number; capacity: number } } | null;
 
 interface ReservationFormProps {
   selectedTable: number | null;
@@ -32,19 +33,15 @@ interface ReservationFormProps {
 const inputClassName =
   'w-full cursor-text appearance-none border-0 bg-transparent p-0 text-base text-ink outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-label';
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
-const reservationSchema = z.object({
-  date: z.string().date(),
-  guests: z.coerce.number().int().min(1),
-  startTime: z.string().regex(/^\d{2}:\d{2}$/),
-});
+const reservationSchema = z.object({ date: z.string().date(), guests: z.coerce.number().int().min(1), startTime: z.string().regex(/^\d{2}:\d{2}$/), tableNumber: z.coerce.number().int().positive() });
 
 export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
   const [status, setStatus] = useState<Status>(null);
-  const [values, setValues] = useState<ReservationValues>({
-    date: getNextReservationDate(),
-    guests: '1',
-    startTime: reservationTimeSlots[0],
-  });
+  const [values, setValues] = useState<ReservationValues>({ date: getNextReservationDate(), guests: '1', startTime: reservationTimeSlots[0], tableNumber: selectedTable?.toString() ?? '' });
+
+  useEffect(() => {
+    setValues((current) => ({ ...current, tableNumber: selectedTable?.toString() ?? '' }));
+  }, [selectedTable]);
 
   function updateValue(field: keyof ReservationValues, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -53,17 +50,17 @@ export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const localErrors = [
-      !selectedTable && 'Selecciona una mesa.',
-      !isReservationStartAvailable(values.date, values.startTime) && 'Elige una fecha y horario válidos.',
-      !reservationSchema.safeParse({ ...values, tableNumber: selectedTable ?? 0 }).success && `La cantidad debe ser de al menos ${reservationMinGuests} persona.`,
+      !values.tableNumber && 'Selecciona una mesa en Mesas disponibles.',
+      !isReservationStartAvailable(values.date, values.startTime) && 'Elige una fecha y un horario futuros dentro de los días y horas de atención.',
+      !reservationSchema.safeParse({ ...values, tableNumber: values.tableNumber }).success && `Completa los datos de reserva.`,
     ].filter(Boolean) as string[];
     if (localErrors.length) return setStatus({ tone: 'error', text: localErrors[0] });
 
-    const payload = { tableNumber: selectedTable, date: values.date, guests: Number(values.guests), startTime: values.startTime };
+    const payload = { tableNumber: Number(values.tableNumber), date: values.date, guests: Number(values.guests), startTime: values.startTime };
     const response = await fetch(`${API_URL}/api/reservations/availability`, { body: JSON.stringify(payload), credentials: 'include', headers: { 'Content-Type': 'application/json' }, method: 'POST' });
     const data = (await response.json()) as { available?: boolean; message?: string; table?: { number: number; capacity: number } | null };
     if (!response.ok || !data.available) return setStatus({ tone: 'error', text: data.message ?? 'Mesa no disponible.' });
-    setStatus({ tone: 'success', text: `Mesa ${data.table?.number} disponible.` });
+    setStatus({ tone: 'success', text: `Mesa ${data.table?.number} disponible.` , table: data.table ?? undefined });
   }
 
   async function createReservation() {
@@ -72,10 +69,7 @@ export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
     setStatus(response.ok ? { tone: 'success', text: 'Reserva realizada correctamente.' } : { tone: 'error', text: data.message ?? 'No se pudo realizar la reserva.' });
   }
   return (
-    <section
-      className="mt-12 text-ink"
-      aria-labelledby="reservation-form-title"
-    >
+    <section className="mt-12 text-ink" aria-labelledby="reservation-form-title">
       <div>
         <Eyebrow tone="label">Reglas de reserva</Eyebrow>
         <h2
@@ -97,6 +91,7 @@ export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
           </li>
         </ul>
       </div>
+      {status?.tone === 'success' && status.table && <article className="mt-6 border border-green-700 bg-green-50 p-5"><h3 className="font-semibold">Mesa {status.table.number} disponible para {values.guests} personas</h3><p className="mt-2 text-sm">Capacidad: {status.table.capacity} personas</p></article>}
       {user && (
         <>
           <FieldLabel label="Nombre">
@@ -142,6 +137,7 @@ export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
             value={values.date}
           />
         </FieldLabel>
+        <FieldLabel label="Mesa"><input className={inputClassName} name="tableNumber" readOnly required value={values.tableNumber ? `Mesa ${values.tableNumber}` : ''} placeholder="Selecciona una mesa" /></FieldLabel>
         <FieldLabel label="Hora de inicio">
           <select
             className="w-full cursor-pointer appearance-none border-0 bg-transparent p-0 text-base text-ink outline-none"

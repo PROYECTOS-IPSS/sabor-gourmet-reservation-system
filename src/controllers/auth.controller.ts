@@ -40,9 +40,6 @@ export async function login(request: Request, response: Response, next: NextFunc
     next(error);
   }
 }
-export function logout(request: Request, response: Response) {
-  request.session.destroy(() => response.json({ message: 'Sesión cerrada correctamente.' }));
-}
 
 export async function currentUser(request: Request, response: Response) {
   if (!request.session.user) {

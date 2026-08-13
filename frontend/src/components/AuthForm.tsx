@@ -75,7 +75,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       if (isLogin) {
         const data = (await response.json()) as { user: { role: 'ADMIN' | 'EMPLOYEE' | 'CUSTOMER' } };
-        navigate(data.user.role === 'ADMIN' ? '/dashboard' : '/reservar', { replace: true });
+        navigate(data.user.role === 'CUSTOMER' ? '/reservar' : '/dashboard', { replace: true });
         notifySessionChange();
         return;
       }

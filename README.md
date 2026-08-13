@@ -4,33 +4,27 @@ Aplicación web de reservas de mesas para el restaurante Sabor Gourmet.
 
 ## Proyecto
 
-El MVP permite:
+El MVP implementado permite:
 
-- consultar disponibilidad sin registrarse;
-- registrarse e iniciar sesión como cliente;
-- crear, modificar y cancelar reservas propias;
-- asignar automáticamente una mesa compatible;
-- mostrar un código de confirmación;
-- administrar cualquier reserva y gestionar mesas desde un panel protegido.
+- consultar disponibilidad de mesas sin registrarse;
+- registrarse como cliente con nombre, apellido y correo;
+- iniciar y cerrar sesión mediante cookies de `express-session`;
+- redirigir clientes a `/reservar` y administradores/empleados a `/dashboard`;
+- asignar automáticamente una mesa activa con capacidad suficiente;
+- validar reservas y evitar solapamientos;
+- proteger el dashboard con sesión y roles `ADMIN` o `EMPLOYEE`;
+- mostrar mesas, capacidades y estado en la pantalla de reserva;
+- administrar la base mediante Prisma, migraciones y seed.
 
-El visitante consulta disponibilidad sin cuenta. El cliente se autentica para reservar y gestionar sus reservas. El administrador tiene control total.
+El cliente público no necesita cuenta para consultar disponibilidad. El registro crea una sesión `CUSTOMER` y dirige a `/reservar`.
 
-El alcance funcional está en [`docs/BRIEF.md`](docs/BRIEF.md), las reglas de desarrollo en [`AGENTS.md`](AGENTS.md) y el diseño visual en [`docs/DESIGN.md`](docs/DESIGN.md).
-
+El alcance funcional está en [`docs/BRIEF.md`](docs/BRIEF.md), las reglas de desarrollo en [`AGENTS.md`](AGENTS.md) y las notas del flujo en [`docs/LOGIN-BRIEF.md`](docs/LOGIN-BRIEF.md).
 
 ## Estado actual
 
-El repositorio es un scaffold inicial. Actualmente incluye:
+La aplicación cuenta con API Express, autenticación por sesión, validación Zod, disponibilidad real contra PostgreSQL, seed de datos demo, pantalla de reservas y dashboard protegido.
 
-- API Express con `GET /api/health`;
-- configuración de entorno y sesiones;
-- cliente Prisma para PostgreSQL;
-- esquema y seed iniciales;
-- frontend React con una pantalla visual de reserva;
-- TailwindCSS configurado mediante Vite;
-- Docker Compose para PostgreSQL local.
-
-Todavía falta implementar la lógica del MVP: disponibilidad real, autenticación de clientes y administrador, reservas, panel admin y gestión de mesas.
+El flujo de creación persistente de reservas, edición administrativa y gestión completa de mesas todavía requiere endpoints y vistas adicionales.
 
 ## Arquitectura MVC
 
@@ -48,54 +42,32 @@ Models + Prisma Client
 PostgreSQL
 ```
 
-- **React:** vistas y componentes.
+- **React:** vistas, formularios, estado de sesión y navegación.
 - **Routes:** endpoints y middlewares.
 - **Controllers:** entrada y salida HTTP.
-- **Services:** reglas de negocio.
+- **Services:** autenticación y disponibilidad.
 - **Models:** acceso a datos mediante Prisma.
 - **Schemas:** validación con Zod.
-- **Middleware:** sesiones, autorización, validación y errores.
+- **Middleware:** sesión, autorización, validación y errores.
 
-## Stack
-
-- Node.js, Express.js y TypeScript.
-- React, TypeScript, TailwindCSS y Vite.
-- PostgreSQL y Prisma ORM.
-- Zod, `bcryptjs` y `express-session`.
-- Yarn, `tsx watch`, ESLint, Prettier, Vitest y Oxlint.
-- Docker Compose opcional.
-
-## Estructura
+## Endpoints actuales
 
 ```text
-sabor-gourmet/
-├── docs/BRIEF.md
-├── prisma/
-│   ├── schema.prisma
-│   └── seed.ts
-├── src/
-│   ├── app.ts
-│   ├── server.ts
-│   ├── config/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   └── generated/prisma/
-├── frontend/
-│   ├── src/
-│   └── package.json
-├── AGENTS.md
-├── docker-compose.yml
-└── package.json
+GET  /api/health
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
+POST /api/auth/logout
+GET  /api/dashboard              ADMIN o EMPLOYEE
+POST /api/reservations/availability
 ```
 
-Las carpetas `controllers`, `services` y `schemas` se agregarán cuando se implementen las funcionalidades correspondientes. No se crean capas vacías.
+## Datos iniciales
 
-## Reserva
+`prisma/seed.ts` crea usuarios demo, 40 mesas activas con capacidades de 1 a 8 personas y reservas de ejemplo. Las contraseñas demo son solo para desarrollo local.
 
-La reserva requiere `userId` del cliente autenticado. Los datos de contacto (nombre, email) se toman del perfil de `User`.
+El modelo `User` incluye `name`, `apellido`, `email`, `passwordHash` y `role`. `Reservation` relaciona usuario y mesa y conserva estado de reserva.
 
-Cada reserva genera un `confirmationCode` único al confirmarse. El esquema Prisma actual ya contiene la relación `Reservation.userId → User`. Solo falta agregar el campo `confirmationCode`.
 
 ## Instalación
 
@@ -118,7 +90,7 @@ Con PostgreSQL local mediante Docker:
 ```bash
 docker compose up -d
 yarn db:generate
-yarn db:migrate
+yarn prisma migrate dev
 yarn db:seed
 yarn dev
 ```

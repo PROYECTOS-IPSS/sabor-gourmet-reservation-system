@@ -95,29 +95,27 @@ frontend/src/
 
 Crear archivos solo cuando una funcionalidad los necesite. Reutilizar patrones existentes.
 
-## Reglas técnicas del MVP
+## Reglas técnicas del MVP implementado
 
-- La disponibilidad es pública. No requiere autenticación.
-- Crear, modificar y cancelar reservas requiere cliente autenticado.
-- Un cliente solo puede gestionar sus propias reservas.
-- El administrador puede gestionar cualquier reserva.
-- Los roles son `CUSTOMER` y `ADMIN`. El admin inicial se crea con `prisma seed`.
-- `Reservation` tiene `userId` obligatorio. Los datos de contacto se toman de `User`.
-- Cada reserva genera un `confirmationCode` único.
-- El servidor asigna automáticamente la mesa.
-- Cada reserva dura 90 minutos.
-- Los horarios comienzan cada 30 minutos, de miércoles a domingo.
-- Solo mesas activas y con capacidad suficiente participan.
-- Nunca se confirma una reserva superpuesta.
-- La comprobación y escritura deben evitar doble reserva concurrente.
-- Cancelar cambia a `CANCELLED`; no se hace hard delete.
+- La disponibilidad pública no requiere autenticación.
+- El registro público crea usuarios `CUSTOMER` y abre sesión automáticamente.
+- Los roles disponibles son `CUSTOMER`, `EMPLOYEE` y `ADMIN`.
+- El dashboard requiere sesión y rol `ADMIN` o `EMPLOYEE`.
+- `User` contiene `name`, `apellido`, `email`, `passwordHash` y `role`.
+- `Reservation` relaciona un usuario y una mesa.
+- El servidor asigna automáticamente mesa activa con capacidad suficiente.
+- Cada reserva dura 90 minutos; los horarios empiezan cada 30 minutos, de miércoles a domingo.
+- La disponibilidad rechaza reservas confirmadas solapadas en la misma mesa.
+- El cliente no elige mesa ni define permisos, estado o disponibilidad.
+- La sesión usa `express-session` y cookie HTTP-only.
+- Las contraseñas se almacenan con `bcryptjs`.
+- No hacer hard delete de reservas.
 - No implementar funciones fuera del brief.
 
 ### Modelo de reserva
 
 ```text
 Reservation
-├── confirmationCode
 ├── userId       → User autenticado
 ├── tableId      → Table asignada
 ├── date
@@ -127,12 +125,12 @@ Reservation
 └── status
 ```
 
+
 - Validar con Zod todo `req.body`, `req.params` y `req.query`.
 - Nunca confiar en datos enviados por React.
 - No usar `any` sin justificación.
 - Guardar contraseñas solo como hash con `bcryptjs`.
-- Proteger las rutas de cliente con sesión y autorización.
-- Proteger las rutas administrativas con sesión y rol `ADMIN`.
+- Proteger el dashboard con sesión y roles `ADMIN` o `EMPLOYEE`.
 - La ruta de disponibilidad es pública y no requiere sesión.
 - El cliente no puede decidir rol, estado, disponibilidad ni mesa.
 - No registrar contraseñas, sesiones ni secretos.

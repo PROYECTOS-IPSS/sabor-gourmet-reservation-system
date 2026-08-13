@@ -38,7 +38,7 @@ const reservationSchema = z.object({
   startTime: z.string().regex(/^\d{2}:\d{2}$/),
 });
 
-export function ReservationForm({ user }: ReservationFormProps) {
+export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
   const [status, setStatus] = useState<Status>(null);
   const [values, setValues] = useState<ReservationValues>({
     date: getNextReservationDate(),
@@ -53,44 +53,24 @@ export function ReservationForm({ user }: ReservationFormProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const localErrors = [
-      !isReservationStartAvailable(values.date, values.startTime) &&
-        'Elige una fecha y un horario futuros dentro de los días y horas de atención.',
-      !reservationSchema.safeParse(values).success &&
-        `La cantidad debe ser de al menos ${reservationMinGuests} persona.`,
+      !selectedTable && 'Selecciona una mesa.',
+      !isReservationStartAvailable(values.date, values.startTime) && 'Elige una fecha y horario válidos.',
+      !reservationSchema.safeParse({ ...values, tableNumber: selectedTable ?? 0 }).success && `La cantidad debe ser de al menos ${reservationMinGuests} persona.`,
     ].filter(Boolean) as string[];
-    if (localErrors.length) {
-      setStatus({ tone: 'error', text: localErrors[0] });
-      return;
-    }
+    if (localErrors.length) return setStatus({ tone: 'error', text: localErrors[0] });
 
-    const response = await fetch(`${API_URL}/api/reservations/availability`, {
-      body: JSON.stringify({
-        date: values.date,
-        guests: Number(values.guests),
-        startTime: values.startTime,
-      }),
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    });
-    const data = (await response.json()) as {
-      available?: boolean;
-      message?: string;
-      table?: { number: number; capacity: number } | null;
-    };
-    setStatus(
-      data.available
-        ? {
-            tone: 'success',
-            text: `Mesa ${data.table?.number} disponible para ${values.guests} personas.`,
-          }
-        : {
-            tone: 'error',
-            text: data.message ?? 'No hay mesas disponibles para ese horario.',
-          },
-    );
+    const payload = { tableNumber: selectedTable, date: values.date, guests: Number(values.guests), startTime: values.startTime };
+    const response = await fetch(`${API_URL}/api/reservations/availability`, { body: JSON.stringify(payload), credentials: 'include', headers: { 'Content-Type': 'application/json' }, method: 'POST' });
+    const data = (await response.json()) as { available?: boolean; message?: string; table?: { number: number; capacity: number } | null };
+    if (!response.ok || !data.available) return setStatus({ tone: 'error', text: data.message ?? 'Mesa no disponible.' });
+    setStatus({ tone: 'success', text: `Mesa ${data.table?.number} disponible.` });
   }
 
+  async function createReservation() {
+    const response = await fetch(`${API_URL}/api/reservations`, { body: JSON.stringify({ tableNumber: selectedTable, date: values.date, guests: Number(values.guests), startTime: values.startTime }), credentials: 'include', headers: { 'Content-Type': 'application/json' }, method: 'POST' });
+    const data = (await response.json()) as { message?: string };
+    setStatus(response.ok ? { tone: 'success', text: 'Reserva realizada correctamente.' } : { tone: 'error', text: data.message ?? 'No se pudo realizar la reserva.' });
+  }
   return (
     <section
       className="mt-12 text-ink"
@@ -150,6 +130,7 @@ export function ReservationForm({ user }: ReservationFormProps) {
             value={values.guests}
           />
         </FieldLabel>
+        <FieldLabel label="Mesa"><input className={inputClassName} readOnly required value={selectedTable ? `Mesa ${selectedTable}` : 'Selecciona una mesa'} /></FieldLabel>
         <FieldLabel label="Fecha">
           <input
             className={inputClassName}
@@ -183,6 +164,7 @@ export function ReservationForm({ user }: ReservationFormProps) {
           <Button type="submit">
             Ver disponibilidad <span className="ml-2 text-gold">→</span>
           </Button>
+          {status?.tone === 'success' && <Button onClick={createReservation} type="button">Realizar reserva <span className="ml-2 text-gold">→</span></Button>}
         </div>
         {status && (
           <p

@@ -36,3 +36,18 @@ export function findUserById(id: number): Promise<PublicUser | null> {
     select: publicUserSelect,
   });
 }
+
+export function findCustomerById(id: number) {
+  return prisma.user.findFirst({
+    where: { id, role: 'CUSTOMER', deletedAt: null },
+    select: { id: true, name: true, email: true },
+  });
+}
+
+export function listCustomers() {
+  return prisma.user.findMany({
+    where: { role: 'CUSTOMER', deletedAt: null },
+    select: { id: true, name: true, email: true },
+    orderBy: { name: 'asc' },
+  });
+}

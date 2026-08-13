@@ -4,4 +4,4 @@ import { requireRoles } from '../middleware/auth.middleware.js';
 
 export const dashboardRoutes = Router();
 
-dashboardRoutes.get('/', requireRoles('ADMIN', 'EMPLOYEE'), dashboard);
+dashboardRoutes.get('/', requireRoles('ADMIN'), dashboard);

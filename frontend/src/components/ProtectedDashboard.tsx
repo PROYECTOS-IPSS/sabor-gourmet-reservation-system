@@ -13,8 +13,7 @@ export function ProtectedDashboard() {
       .finally(() => setChecked(true));
   }, []);
 
-  if (!checked) return <p className="p-10 text-cream">Verificando sesión…</p>;
-  if (!user) return <Navigate replace to="/login" />;
-  if (user.role === 'CUSTOMER') return <Navigate replace to="/reservar" />;
+  if (!checked) return <p className="p-10 text-cream" role="status">Verificando sesión…</p>;
+  if (!user || user.role !== 'ADMIN') return <Navigate replace to="/reservar" />;
   return <DashboardPage user={user} />;
 }

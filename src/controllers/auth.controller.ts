@@ -60,3 +60,15 @@ export async function currentUser(request: Request, response: Response) {
 
   response.json({ user });
 }
+
+export function logout(request: Request, response: Response, next: NextFunction) {
+  request.session.destroy((error) => {
+    if (error) {
+      next(error);
+      return;
+    }
+
+    response.clearCookie('connect.sid');
+    response.json({ message: 'Sesión cerrada correctamente.' });
+  });
+}

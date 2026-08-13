@@ -22,9 +22,9 @@ El alcance funcional está en [`docs/BRIEF.md`](docs/BRIEF.md), las reglas de de
 
 ## Estado actual
 
-La aplicación cuenta con API Express, autenticación por sesión, validación Zod, disponibilidad real contra PostgreSQL, seed de datos demo, pantalla de reservas y dashboard protegido.
+La aplicación cuenta con API Express, autenticación por sesión, validación Zod, disponibilidad real contra PostgreSQL, seed de datos demo, pantalla de reservas y panel administrativo.
 
-El flujo de creación persistente de reservas, edición administrativa y gestión completa de mesas todavía requiere endpoints y vistas adicionales.
+Incluye gestión administrativa de mesas y reservas, asignación automática, cancelación lógica y códigos únicos de confirmación.
 
 ## Arquitectura MVC
 

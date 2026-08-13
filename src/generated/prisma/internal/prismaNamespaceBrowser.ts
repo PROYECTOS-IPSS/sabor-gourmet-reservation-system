@@ -102,6 +102,7 @@ export type TableScalarFieldEnum = (typeof TableScalarFieldEnum)[keyof typeof Ta
 
 export const ReservationScalarFieldEnum = {
   id: 'id',
+  confirmationCode: 'confirmationCode',
   userId: 'userId',
   tableId: 'tableId',
   date: 'date',

@@ -69,7 +69,10 @@ export function ReservationForm({ selectedTable, user }: ReservationFormProps) {
     setStatus(response.ok ? { tone: 'success', text: 'Reserva realizada correctamente.' } : { tone: 'error', text: data.message ?? 'No se pudo realizar la reserva.' });
   }
   return (
-    <section className="mt-12 text-ink" aria-labelledby="reservation-form-title">
+    <section
+      className="mt-12 text-ink"
+      aria-labelledby="reservation-form-title"
+    >
       <div>
         <Eyebrow tone="label">Reglas de reserva</Eyebrow>
         <h2

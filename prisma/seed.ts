@@ -63,7 +63,7 @@ async function main() {
     ['2026-08-30', '19:30', 20, 2, 9, 'CONFIRMED'],
   ] as const;
 
-  for (const [date, start, tableNumber, guests, customerIndex, status] of examples) {
+  for (const [index, [date, start, tableNumber, guests, customerIndex, status]] of examples.entries()) {
     const table = tables.find((item) => item.number === ((tableNumber - 1) % tables.length) + 1)!;
     const startTime = new Date(`${date}T${start}:00.000Z`);
     const endTime = new Date(startTime.getTime() + 90 * 60 * 1000);
@@ -72,7 +72,7 @@ async function main() {
 
     if (!existing) {
       await prisma.reservation.create({
-        data: { userId: user.id, tableId: table.id, date: new Date(`${date}T00:00:00.000Z`), startTime, endTime, guests, status },
+        data: { confirmationCode: `SG-DEMO-${String(index + 1).padStart(2, '0')}`, userId: user.id, tableId: table.id, date: new Date(`${date}T00:00:00.000Z`), startTime, endTime, guests, status },
       });
     }
   }

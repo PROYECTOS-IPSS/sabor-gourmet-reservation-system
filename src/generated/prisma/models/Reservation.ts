@@ -42,6 +42,7 @@ export type ReservationSumAggregateOutputType = {
 
 export type ReservationMinAggregateOutputType = {
   id: number | null
+  confirmationCode: string | null
   userId: number | null
   tableId: number | null
   date: Date | null
@@ -56,6 +57,7 @@ export type ReservationMinAggregateOutputType = {
 
 export type ReservationMaxAggregateOutputType = {
   id: number | null
+  confirmationCode: string | null
   userId: number | null
   tableId: number | null
   date: Date | null
@@ -70,6 +72,7 @@ export type ReservationMaxAggregateOutputType = {
 
 export type ReservationCountAggregateOutputType = {
   id: number
+  confirmationCode: number
   userId: number
   tableId: number
   date: number
@@ -100,6 +103,7 @@ export type ReservationSumAggregateInputType = {
 
 export type ReservationMinAggregateInputType = {
   id?: true
+  confirmationCode?: true
   userId?: true
   tableId?: true
   date?: true
@@ -114,6 +118,7 @@ export type ReservationMinAggregateInputType = {
 
 export type ReservationMaxAggregateInputType = {
   id?: true
+  confirmationCode?: true
   userId?: true
   tableId?: true
   date?: true
@@ -128,6 +133,7 @@ export type ReservationMaxAggregateInputType = {
 
 export type ReservationCountAggregateInputType = {
   id?: true
+  confirmationCode?: true
   userId?: true
   tableId?: true
   date?: true
@@ -229,6 +235,7 @@ export type ReservationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type ReservationGroupByOutputType = {
   id: number
+  confirmationCode: string
   userId: number
   tableId: number
   date: Date
@@ -266,6 +273,7 @@ export type ReservationWhereInput = {
   OR?: Prisma.ReservationWhereInput[]
   NOT?: Prisma.ReservationWhereInput | Prisma.ReservationWhereInput[]
   id?: Prisma.IntFilter<"Reservation"> | number
+  confirmationCode?: Prisma.StringFilter<"Reservation"> | string
   userId?: Prisma.IntFilter<"Reservation"> | number
   tableId?: Prisma.IntFilter<"Reservation"> | number
   date?: Prisma.DateTimeFilter<"Reservation"> | Date | string
@@ -282,6 +290,7 @@ export type ReservationWhereInput = {
 
 export type ReservationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  confirmationCode?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
   date?: Prisma.SortOrder
@@ -298,6 +307,7 @@ export type ReservationOrderByWithRelationInput = {
 
 export type ReservationWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  confirmationCode?: string
   AND?: Prisma.ReservationWhereInput | Prisma.ReservationWhereInput[]
   OR?: Prisma.ReservationWhereInput[]
   NOT?: Prisma.ReservationWhereInput | Prisma.ReservationWhereInput[]
@@ -313,10 +323,11 @@ export type ReservationWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Reservation"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   table?: Prisma.XOR<Prisma.TableScalarRelationFilter, Prisma.TableWhereInput>
-}, "id">
+}, "id" | "confirmationCode">
 
 export type ReservationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  confirmationCode?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
   date?: Prisma.SortOrder
@@ -339,6 +350,7 @@ export type ReservationScalarWhereWithAggregatesInput = {
   OR?: Prisma.ReservationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ReservationScalarWhereWithAggregatesInput | Prisma.ReservationScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Reservation"> | number
+  confirmationCode?: Prisma.StringWithAggregatesFilter<"Reservation"> | string
   userId?: Prisma.IntWithAggregatesFilter<"Reservation"> | number
   tableId?: Prisma.IntWithAggregatesFilter<"Reservation"> | number
   date?: Prisma.DateTimeWithAggregatesFilter<"Reservation"> | Date | string
@@ -352,6 +364,7 @@ export type ReservationScalarWhereWithAggregatesInput = {
 }
 
 export type ReservationCreateInput = {
+  confirmationCode: string
   date: Date | string
   startTime: Date | string
   endTime: Date | string
@@ -366,6 +379,7 @@ export type ReservationCreateInput = {
 
 export type ReservationUncheckedCreateInput = {
   id?: number
+  confirmationCode: string
   userId: number
   tableId: number
   date: Date | string
@@ -379,6 +393,7 @@ export type ReservationUncheckedCreateInput = {
 }
 
 export type ReservationUpdateInput = {
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -393,6 +408,7 @@ export type ReservationUpdateInput = {
 
 export type ReservationUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   tableId?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -407,6 +423,7 @@ export type ReservationUncheckedUpdateInput = {
 
 export type ReservationCreateManyInput = {
   id?: number
+  confirmationCode: string
   userId: number
   tableId: number
   date: Date | string
@@ -420,6 +437,7 @@ export type ReservationCreateManyInput = {
 }
 
 export type ReservationUpdateManyMutationInput = {
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -432,6 +450,7 @@ export type ReservationUpdateManyMutationInput = {
 
 export type ReservationUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   tableId?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -456,6 +475,7 @@ export type ReservationOrderByRelationAggregateInput = {
 
 export type ReservationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  confirmationCode?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
   date?: Prisma.SortOrder
@@ -477,6 +497,7 @@ export type ReservationAvgOrderByAggregateInput = {
 
 export type ReservationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  confirmationCode?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
   date?: Prisma.SortOrder
@@ -491,6 +512,7 @@ export type ReservationMaxOrderByAggregateInput = {
 
 export type ReservationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  confirmationCode?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
   date?: Prisma.SortOrder
@@ -599,6 +621,7 @@ export type EnumReservationStatusFieldUpdateOperationsInput = {
 }
 
 export type ReservationCreateWithoutUserInput = {
+  confirmationCode: string
   date: Date | string
   startTime: Date | string
   endTime: Date | string
@@ -612,6 +635,7 @@ export type ReservationCreateWithoutUserInput = {
 
 export type ReservationUncheckedCreateWithoutUserInput = {
   id?: number
+  confirmationCode: string
   tableId: number
   date: Date | string
   startTime: Date | string
@@ -654,6 +678,7 @@ export type ReservationScalarWhereInput = {
   OR?: Prisma.ReservationScalarWhereInput[]
   NOT?: Prisma.ReservationScalarWhereInput | Prisma.ReservationScalarWhereInput[]
   id?: Prisma.IntFilter<"Reservation"> | number
+  confirmationCode?: Prisma.StringFilter<"Reservation"> | string
   userId?: Prisma.IntFilter<"Reservation"> | number
   tableId?: Prisma.IntFilter<"Reservation"> | number
   date?: Prisma.DateTimeFilter<"Reservation"> | Date | string
@@ -667,6 +692,7 @@ export type ReservationScalarWhereInput = {
 }
 
 export type ReservationCreateWithoutTableInput = {
+  confirmationCode: string
   date: Date | string
   startTime: Date | string
   endTime: Date | string
@@ -680,6 +706,7 @@ export type ReservationCreateWithoutTableInput = {
 
 export type ReservationUncheckedCreateWithoutTableInput = {
   id?: number
+  confirmationCode: string
   userId: number
   date: Date | string
   startTime: Date | string
@@ -719,6 +746,7 @@ export type ReservationUpdateManyWithWhereWithoutTableInput = {
 
 export type ReservationCreateManyUserInput = {
   id?: number
+  confirmationCode: string
   tableId: number
   date: Date | string
   startTime: Date | string
@@ -731,6 +759,7 @@ export type ReservationCreateManyUserInput = {
 }
 
 export type ReservationUpdateWithoutUserInput = {
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -744,6 +773,7 @@ export type ReservationUpdateWithoutUserInput = {
 
 export type ReservationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -757,6 +787,7 @@ export type ReservationUncheckedUpdateWithoutUserInput = {
 
 export type ReservationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -770,6 +801,7 @@ export type ReservationUncheckedUpdateManyWithoutUserInput = {
 
 export type ReservationCreateManyTableInput = {
   id?: number
+  confirmationCode: string
   userId: number
   date: Date | string
   startTime: Date | string
@@ -782,6 +814,7 @@ export type ReservationCreateManyTableInput = {
 }
 
 export type ReservationUpdateWithoutTableInput = {
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -795,6 +828,7 @@ export type ReservationUpdateWithoutTableInput = {
 
 export type ReservationUncheckedUpdateWithoutTableInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -808,6 +842,7 @@ export type ReservationUncheckedUpdateWithoutTableInput = {
 
 export type ReservationUncheckedUpdateManyWithoutTableInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  confirmationCode?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -823,6 +858,7 @@ export type ReservationUncheckedUpdateManyWithoutTableInput = {
 
 export type ReservationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  confirmationCode?: boolean
   userId?: boolean
   tableId?: boolean
   date?: boolean
@@ -839,6 +875,7 @@ export type ReservationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type ReservationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  confirmationCode?: boolean
   userId?: boolean
   tableId?: boolean
   date?: boolean
@@ -855,6 +892,7 @@ export type ReservationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 
 export type ReservationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  confirmationCode?: boolean
   userId?: boolean
   tableId?: boolean
   date?: boolean
@@ -871,6 +909,7 @@ export type ReservationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 
 export type ReservationSelectScalar = {
   id?: boolean
+  confirmationCode?: boolean
   userId?: boolean
   tableId?: boolean
   date?: boolean
@@ -883,7 +922,7 @@ export type ReservationSelectScalar = {
   deletedAt?: boolean
 }
 
-export type ReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tableId" | "date" | "startTime" | "endTime" | "guests" | "status" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["reservation"]>
+export type ReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "confirmationCode" | "userId" | "tableId" | "date" | "startTime" | "endTime" | "guests" | "status" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["reservation"]>
 export type ReservationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
@@ -905,6 +944,7 @@ export type $ReservationPayload<ExtArgs extends runtime.Types.Extensions.Interna
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
+    confirmationCode: string
     userId: number
     tableId: number
     date: Date
@@ -1341,6 +1381,7 @@ export interface Prisma__ReservationClient<T, Null = never, ExtArgs extends runt
  */
 export interface ReservationFieldRefs {
   readonly id: Prisma.FieldRef<"Reservation", 'Int'>
+  readonly confirmationCode: Prisma.FieldRef<"Reservation", 'String'>
   readonly userId: Prisma.FieldRef<"Reservation", 'Int'>
   readonly tableId: Prisma.FieldRef<"Reservation", 'Int'>
   readonly date: Prisma.FieldRef<"Reservation", 'DateTime'>

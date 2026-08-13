@@ -22,9 +22,9 @@ El alcance funcional está en [`docs/BRIEF.md`](docs/BRIEF.md), las reglas de de
 
 ## Estado actual
 
-La aplicación cuenta con API Express, autenticación por sesión, validación Zod, disponibilidad real contra PostgreSQL, seed de datos demo, pantalla de reservas y dashboard protegido.
+La aplicación cuenta con API Express, autenticación por sesión, validación Zod, disponibilidad real contra PostgreSQL, seed de datos demo, pantalla de reservas y panel administrativo.
 
-El flujo de creación persistente de reservas, edición administrativa y gestión completa de mesas todavía requiere endpoints y vistas adicionales.
+Incluye gestión administrativa de mesas y reservas, asignación automática, cancelación lógica y códigos únicos de confirmación.
 
 ## Arquitectura MVC
 
@@ -45,7 +45,7 @@ PostgreSQL
 - **React:** vistas, formularios, estado de sesión y navegación.
 - **Routes:** endpoints y middlewares.
 - **Controllers:** entrada y salida HTTP.
-- **Services:** autenticación y disponibilidad.
+- **Services:** autenticación, disponibilidad, asignación y gestión administrativa.
 - **Models:** acceso a datos mediante Prisma.
 - **Schemas:** validación con Zod.
 - **Middleware:** sesión, autorización, validación y errores.
@@ -60,6 +60,15 @@ GET  /api/auth/me
 POST /api/auth/logout
 GET  /api/dashboard              ADMIN o EMPLOYEE
 POST /api/reservations/availability
+GET  /api/admin/customers         ADMIN
+GET  /api/admin/tables            ADMIN
+POST /api/admin/tables            ADMIN
+PATCH /api/admin/tables/:id       ADMIN
+DELETE /api/admin/tables/:id      ADMIN
+GET  /api/admin/reservations      ADMIN
+POST /api/admin/reservations      ADMIN
+PATCH /api/admin/reservations/:id ADMIN
+POST /api/admin/reservations/:id/cancel ADMIN
 ```
 
 ## Datos iniciales

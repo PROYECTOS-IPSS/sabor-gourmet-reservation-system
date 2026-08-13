@@ -7,9 +7,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses = {
-  primary: 'border-0 bg-ink px-submit-x py-submit-y text-sm text-cream hover:bg-label',
-  slot: 'border px-slot-x py-2.5 font-mono text-slot text-panel-copy hover:border-ink hover:bg-ink hover:text-cream',
-  table: 'flex aspect-square items-center justify-center rounded-full border border-brown-line font-mono text-sm text-gold hover:border-gold hover:bg-gold hover:text-ink',
+  primary: 'cursor-pointer border-0 bg-ink px-submit-x py-submit-y text-sm text-cream hover:bg-label disabled:cursor-not-allowed disabled:opacity-50',
+  slot: 'cursor-pointer border px-slot-x py-2.5 font-mono text-slot text-panel-copy hover:border-ink hover:bg-ink hover:text-cream disabled:cursor-not-allowed disabled:opacity-50',
+  table: 'flex aspect-square cursor-pointer items-center justify-center rounded-full border border-brown-line font-mono text-sm text-gold hover:border-gold hover:bg-gold hover:text-ink disabled:cursor-not-allowed disabled:opacity-50',
 };
 
 export function Button({

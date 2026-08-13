@@ -24,7 +24,7 @@ type Status = { tone: 'error' | 'success'; text: string } | null;
 type TableForm = { number: string; capacity: string; isActive: boolean };
 type ReservationForm = { userId: string; date: string; startTime: string; guests: string };
 
-const inputClassName = 'w-full border border-field-line bg-cream px-3 py-2 text-sm text-ink outline-none focus-visible:border-label focus-visible:outline-2 focus-visible:outline-offset-1';
+const inputClassName = 'min-h-11 w-full border border-field-line bg-cream px-3 py-2 text-sm text-ink outline-none focus-visible:border-label focus-visible:outline-2 focus-visible:outline-offset-1';
 const initialTableForm: TableForm = { number: '', capacity: '', isActive: true };
 const initialReservationForm: ReservationForm = { userId: '', date: getNextReservationDate(), startTime: reservationTimeSlots[0], guests: '1' };
 
@@ -186,11 +186,11 @@ export function DashboardPage({ user }: DashboardPageProps) {
               <p className="text-sm text-panel-copy">{tables.length} configuradas · {activeTables} activas</p>
             </div>
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
-                {tables.map((table) => <article className={`border p-4 ${table.isActive ? 'border-label bg-cream' : 'border-field-line bg-transparent opacity-65'}`} key={table.id}>
-                  <div className="flex items-start justify-between gap-2"><span className="font-display text-3xl">{table.number}</span><span className="font-mono text-[9px] uppercase tracking-label text-panel-copy">{table.isActive ? 'Activa' : 'Inactiva'}</span></div>
-                  <p className="mt-3 text-sm text-panel-copy">{table.capacity} {table.capacity === 1 ? 'persona' : 'personas'}</p>
-                  <div className="mt-4 flex gap-2"><button className="font-mono text-[10px] uppercase tracking-link text-label underline underline-offset-4 focus-visible:outline-2" onClick={() => editTable(table)} type="button">Editar</button>{table.isActive && <button className="font-mono text-[10px] uppercase tracking-link text-panel-copy underline underline-offset-4 focus-visible:outline-2" onClick={() => void removeTable(table)} type="button">Desactivar</button>}</div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {tables.map((table) => <article className={`min-h-40 border p-4 ${table.isActive ? 'border-label bg-cream text-ink' : 'border-field-line bg-ink text-cream opacity-80'}`} key={table.id}>
+                  <div className="flex items-start justify-between gap-2"><span className="font-display text-3xl">{table.number}</span><span className={`font-mono text-[9px] uppercase tracking-label ${table.isActive ? 'text-label' : 'text-gold'}`}>{table.isActive ? 'Activa' : 'Inactiva'}</span></div>
+                  <p className={`mt-3 text-sm ${table.isActive ? 'text-panel-copy' : 'text-muted'}`}>{table.capacity} {table.capacity === 1 ? 'persona' : 'personas'}</p>
+                  <div className="mt-4 grid gap-2"><button aria-label={`Editar mesa ${table.number}`} className="w-full cursor-pointer border border-brown-line px-2 py-2 font-mono text-[10px] uppercase tracking-link text-label transition-colors hover:border-ink hover:bg-ink hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-label" onClick={() => editTable(table)} type="button">Editar</button>{table.isActive && <button aria-label={`Desactivar mesa ${table.number}`} className="w-full cursor-pointer border border-field-line px-2 py-2 font-mono text-[10px] uppercase tracking-link text-panel-copy transition-colors hover:border-label hover:text-label focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-label" onClick={() => void removeTable(table)} type="button">Desactivar</button>}</div>
                 </article>)}
               </div>
               <form className="grid content-start gap-4 border border-field-line bg-cream p-5" onSubmit={submitTable}>

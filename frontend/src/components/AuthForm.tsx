@@ -93,7 +93,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <form className="flex max-w-booking flex-col gap-6" noValidate onSubmit={handleSubmit}>
+    <form className="w-full max-w-booking min-w-0 flex flex-col gap-6" noValidate onSubmit={handleSubmit}>
       {!isLogin && <div className="contents"><FieldLabel label="Nombre"><input className={inputClassName} name="name" onChange={(event) => updateValue('name', event.target.value)} required type="text" value={values.name} /></FieldLabel><FieldLabel label="Apellido"><input className={inputClassName} name="apellido" onChange={(event) => updateValue('apellido', event.target.value)} required type="text" value={values.apellido} /></FieldLabel></div>}
       <FieldLabel label="Correo">
         <input

@@ -9,7 +9,7 @@ interface RestaurantHoursCardProps {
 
 export function RestaurantHoursCard({ children, className = '' }: RestaurantHoursCardProps) {
   return (
-    <article className={`bg-ink p-8 text-cream ${className}`.trim()}>
+    <article className={`min-w-0 overflow-hidden bg-ink p-8 text-cream max-phone:p-4 ${className}`.trim()}>
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
           <p className="mb-2 font-mono text-micro uppercase tracking-label text-gold">Información</p>

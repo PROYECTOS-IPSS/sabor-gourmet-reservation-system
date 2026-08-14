@@ -718,8 +718,6 @@ export const ReservationScalarFieldEnum = {
   endTime: 'endTime',
   guests: 'guests',
   status: 'status',
-  cancelledAt: 'cancelledAt',
-  completedAt: 'completedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'

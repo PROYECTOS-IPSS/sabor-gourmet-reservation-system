@@ -7,6 +7,7 @@ import { healthRoutes } from './routes/health.routes.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { dashboardRoutes } from './routes/dashboard.routes.js';
 import { reservationRoutes } from './routes/reservation.routes.js';
+import { adminRoutes } from './routes/admin.routes.js';
 
 export const app = express();
 
@@ -33,4 +34,5 @@ app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/admin', adminRoutes);
 app.use(errorMiddleware);

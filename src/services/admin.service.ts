@@ -4,14 +4,14 @@ import { createTable, findTableById, listTables, softDeleteTable, updateTable } 
 import { prisma } from '../models/prisma.js';
 import { findCustomerById, listCustomers as listCustomerUsers } from '../models/user.model.js';
 import {
-  cancelReservation,
-  createReservation,
-  findAvailableTableForAdmin,
-  findReservationById,
-  listReservations,
-  withSerializableTransaction,
-  updateReservation,
+  cancelReservationWithClient as cancelReservation,
+  createReservationWithClient as createReservation,
+  findAvailableTableWithClient as findAvailableTableForAdmin,
+  findReservationByIdWithClient as findReservationById,
+  findAllReservationsWithClient as listReservations,
+  updateReservationWithClient as updateReservation,
 } from '../models/reservation.model.js';
+import { withSerializableTransaction } from '../models/prisma.js';
 import type {
   ReservationCreateInput,
   ReservationQuery,
@@ -111,10 +111,13 @@ export async function removeTable(id: number) {
   return softDeleteTable(id);
 }
 
-export function getReservations(query: ReservationQuery) {
-  return listReservations({
-    date: query.date ? parseDate(query.date) : undefined,
-    status: query.status as ReservationStatus | undefined,
+export async function getReservations(query: ReservationQuery) {
+  const all = await listReservations(prisma);
+  const dateFilter = query.date ? parseDate(query.date).toISOString().slice(0, 10) : null;
+  return all.filter((r) => {
+    if (dateFilter && r.date.toISOString().slice(0, 10) !== dateFilter) return false;
+    if (query.status && r.status !== query.status) return false;
+    return true;
   });
 }
 
@@ -133,7 +136,7 @@ export async function addReservation(input: ReservationCreateInput) {
   const window = reservationWindow(input.date, input.startTime);
 
   return reservationTransaction(async (database) => {
-    const table = await findAvailableTableForAdmin(database, { ...window, guests: input.guests });
+    const table = await findAvailableTableForAdmin(database, window.date, window.startTime, window.endTime, input.guests);
     if (!table) throw new AdminServiceError(409, 'No hay mesas disponibles para ese horario y cantidad de personas.');
 
     return createReservation(database, {
@@ -166,10 +169,10 @@ export async function editReservation(id: number, input: ReservationUpdateInput)
       throw new AdminServiceError(409, 'La reserva ya no puede modificarse.');
     }
 
-    const table = await findAvailableTableForAdmin(database, { ...window, guests, excludeReservationId: id });
+    const table = await findAvailableTableForAdmin(database, window.date, window.startTime, window.endTime, guests);
     if (!table) throw new AdminServiceError(409, 'No hay mesas disponibles para ese horario y cantidad de personas.');
 
-    return updateReservation(database, id, { userId, tableId: table.id, ...window, guests });
+    const result = await updateReservation(database, id, { tableId: table.id, date: window.date, startTime: window.startTime, endTime: window.endTime, guests });
   });
 }
 

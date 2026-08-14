@@ -1,4 +1,5 @@
-import { createReservation, findActiveTableByNumber, findUserReservation, hasOverlappingReservation, cancelUserReservation, updateUserReservation } from '../models/reservation.model.js';
+import { createReservation, findActiveTableByNumber, findUserReservation, hasOverlappingReservation, cancelUserReservation, updateUserReservation, findReservationsByUserId } from '../models/reservation.model.js';
+import { randomUUID } from 'node:crypto';
 import type { ReservationInput } from '../schemas/reservation.schemas.js';
 
 const durationMinutes = 90;
@@ -19,7 +20,7 @@ export async function checkReservationAvailability(input: ReservationInput) {
 export async function createCustomerReservation(userId: number, input: ReservationInput) {
   const availability = await checkReservationAvailability(input);
   if (!availability.available || !availability.table) return null;
-  return createReservation({ userId, tableId: availability.table.id, date: availability.date, startTime: availability.startTime, endTime: availability.endTime, guests: input.guests });
+  return createReservation({ userId, tableId: availability.table.id, date: availability.date, startTime: availability.startTime, endTime: availability.endTime, guests: input.guests, confirmationCode: randomUUID() });
 }
 
 export async function cancelCustomerReservation(id: number, userId: number) {
@@ -36,4 +37,8 @@ export async function updateCustomerReservation(id: number, userId: number, inpu
   if (!availability.available || !availability.table) return null;
   const result = await updateUserReservation(id, userId, { tableId: availability.table.id, date: availability.date, startTime: availability.startTime, endTime: availability.endTime, guests: input.guests });
   return result.count ? findUserReservation(id, userId) : null;
+}
+
+export async function listUserReservations(userId: number) {
+  return findReservationsByUserId(userId);
 }

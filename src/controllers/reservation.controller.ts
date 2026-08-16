@@ -13,7 +13,6 @@ export async function checkAvailability(request: Request, response: Response, ne
       endTime: result.endTime,
     });
   } catch (error) {
-    console.error(error);
     next(error);
   }
 }
@@ -21,7 +20,8 @@ export async function checkAvailability(request: Request, response: Response, ne
 export async function listMyReservations(request: Request, response: Response, next: NextFunction) {
   try {
     const reservations = await listUserReservations(request.session.user!.id);
-    response.json(reservations);
+    response.set('Cache-Control', 'no-store');
+    response.json({ reservations });
   } catch (error) {
     next(error);
   }
@@ -31,7 +31,7 @@ export async function createReservation(request: Request, response: Response, ne
   try {
     const reservation = await createCustomerReservation(request.session.user!.id, request.body as ReservationInput);
     if (!reservation) {
-      response.status(400).json({ message: 'No se pudo crear la reserva.' });
+      response.status(409).json({ message: 'La mesa no está disponible para ese horario.' });
       return;
     }
     response.status(201).json(reservation);
@@ -57,7 +57,7 @@ export async function updateReservation(request: Request, response: Response, ne
   try {
     const reservation = await updateCustomerReservation(Number(request.params.id), request.session.user!.id, request.body as ReservationInput);
     if (!reservation) {
-      response.status(400).json({ message: 'No se pudo actualizar la reserva.' });
+      response.status(409).json({ message: 'La mesa no está disponible para ese horario o la reserva ya no puede modificarse.' });
       return;
     }
     response.json(reservation);

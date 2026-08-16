@@ -10,6 +10,7 @@ import { reservationRoutes } from './routes/reservation.routes.js';
 import { adminRoutes } from './routes/admin.routes.js';
 
 export const app = express();
+app.set('trust proxy', 1);
 
 app.use(
   cors({

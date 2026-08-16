@@ -34,6 +34,7 @@ export async function login(request: Request, response: Response, next: NextFunc
       return;
     }
     request.session.user = { id: user.id, role: user.role };
+    request.session.save();
     const publicUser = await findUserById(user.id);
     response.json({ message: 'Sesión iniciada correctamente.', user: publicUser });
   } catch (error) {

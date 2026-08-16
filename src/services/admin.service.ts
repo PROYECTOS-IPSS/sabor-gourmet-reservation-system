@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import type { ReservationStatus } from '../generated/prisma/enums.js';
 import { createTable, findTableById, listTables, softDeleteTable, updateTable } from '../models/table.model.js';
 import { prisma } from '../models/prisma.js';
 import { findCustomerById, listCustomers as listCustomerUsers } from '../models/user.model.js';
@@ -169,10 +168,10 @@ export async function editReservation(id: number, input: ReservationUpdateInput)
       throw new AdminServiceError(409, 'La reserva ya no puede modificarse.');
     }
 
-    const table = await findAvailableTableForAdmin(database, window.date, window.startTime, window.endTime, guests);
+    const table = await findAvailableTableForAdmin(database, window.date, window.startTime, window.endTime, guests, id);
     if (!table) throw new AdminServiceError(409, 'No hay mesas disponibles para ese horario y cantidad de personas.');
 
-    const result = await updateReservation(database, id, { tableId: table.id, date: window.date, startTime: window.startTime, endTime: window.endTime, guests });
+    return updateReservation(database, id, { tableId: table.id, date: window.date, startTime: window.startTime, endTime: window.endTime, guests });
   });
 }
 

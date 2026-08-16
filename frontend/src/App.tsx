@@ -7,6 +7,7 @@ import { ProtectedDashboard } from './components/ProtectedDashboard';
 import { MyReservationsPage } from './components/MyReservationsPage';
 import { ReservationPage } from './components/ReservationPage';
 import { PageShell } from './components/PageShell';
+import { InfoPage } from './components/InfoPage';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
           }
           path="/"
         />
+        <Route element={<PageShell><InfoPage eyebrow="La carta" title="Sabores para recordar" /></PageShell>} path="/carta" />
+        <Route element={<PageShell><InfoPage eyebrow="La experiencia" title="Una noche hecha a tu medida" /></PageShell>} path="/experiencia" />
         <Route element={<PageShell><ReservationPage /></PageShell>} path="/reservar" />
         <Route element={<PageShell><AuthPage mode="register" /></PageShell>} path="/registrarse" />
         <Route element={<PageShell><AuthPage mode="login" /></PageShell>} path="/login" />

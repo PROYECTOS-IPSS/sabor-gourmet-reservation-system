@@ -40,11 +40,11 @@ Inicia sesión y puede:
 ## Flujo de reserva
 
 1. El visitante elige fecha, horario y cantidad de personas.
-2. El sistema muestra las mesas disponibles.
+2. El sistema consulta y muestra si existe disponibilidad.
 3. Para confirmar, el sistema solicita registro o inicio de sesión.
 4. El cliente autenticado confirma la reserva.
-5. El sistema asigna automáticamente una mesa activa con capacidad suficiente.
-6. Se muestra un código único de confirmación.
+5. El servidor asigna automáticamente la mesa activa más adecuada según capacidad y disponibilidad.
+6. Se muestra un código único de confirmación y la mesa asignada.
 
 ## Reglas de disponibilidad
 
@@ -71,7 +71,7 @@ Una reserva pertenece a un cliente autenticado y a una mesa. Sus datos son:
 - fecha;
 - hora de inicio y fin;
 - cantidad de personas;
-- estado: `CONFIRMED` o `CANCELLED`;
+- estado: `CONFIRMED`, `COMPLETED` o `CANCELLED`;
 - fechas de creación y actualización.
 
 Los datos de contacto (nombre, email) se obtienen del perfil del usuario. No se duplican en la reserva.
@@ -116,7 +116,7 @@ Los datos de contacto (nombre, email) se obtienen del perfil del usuario. No se 
 
 - Cualquier persona puede consultar disponibilidad sin registrarse.
 - Un visitante puede registrarse, iniciar sesión y crear una reserva.
-- El sistema asigna una mesa compatible y activa automáticamente.
+- El sistema asigna una mesa compatible y activa automáticamente; el cliente no elige mesa.
 - Se rechazan datos inválidos, horarios fuera de atención, fechas pasadas y falta de disponibilidad.
 - No se pueden confirmar reservas superpuestas.
 - Un cliente solo puede modificar o cancelar sus propias reservas.

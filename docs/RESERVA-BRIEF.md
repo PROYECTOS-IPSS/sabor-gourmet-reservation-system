@@ -1,16 +1,19 @@
 # RESERVA SCREEN
 
-sin login:
+## Visitante
 
-- Debe aparecer campo "Mesa" en el formulario, el cual debe ser seleccionado en la card Mesas Disponibles.
-- Al presionar "Ver diponibilidad" se envía un json con los datos de la request, tanto hora, fecha, y solapamiento (hay que tener en cuenta que cada reserva dura hora y media).
-- El texto de "Mesa x disponible para x personas" debe aparecer en una card.
+- Debe aparecer formulario con fecha, horario y cantidad de personas.
+- "Ver disponibilidad" consulta el servidor.
+- El servidor asigna automáticamente la mesa activa más adecuada.
+- La respuesta muestra mesa asignada y capacidad.
 
-con login:
+## Cliente autenticado
 
-- Debe aparecer campos "Mesa" en el formulario, el cual debe ser seleccionado en la card Mesas Disponibles
-- Si está disponible, debe salir un botón para enviar la request con la reserva, se debe guardar la reserva en la base de datos
-- El header debe agregar la screen "Mis reservas", con la información de las reservas del usuario
-- Las reservas deben estar divididas en el siguiente orden: Confirmadas -> Completadas -> Canceladas
-- Dentro de las cards de cada reserva debe existir un botón "Cancelar reserva" que abre un modal advirtiendo que la acción no se puede deshacer.
-- Dentro de las cards de cada reserva debe existir un botón "Modificar reserva" que abre un modal que permite cambiar la reserva de fecha, hora y mesa, también debe tener un boton para ver disponibilidad, y si está disponible, ahí recién se permite cambiar la reserva.
+- Usa fecha, horario y cantidad de personas; no elige mesa.
+- Puede confirmar reserva cuando existe disponibilidad.
+- La reserva guarda mesa asignada por servidor.
+- Header incluye "Mis reservas".
+- Orden: Confirmadas -> Completadas -> Canceladas.
+- Reserva confirmada permite cancelación mediante modal.
+- Modificación permite fecha, hora y cantidad de personas.
+- Al modificar, servidor valida reglas y reasigna mesa automáticamente.

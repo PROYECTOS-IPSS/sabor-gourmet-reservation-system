@@ -1,8 +1,11 @@
 # NOTAS
 
-mantén el estilo visual, reutiliza componentes o crea nuevos en caso de que haya código similar (por ejemplo card con horarios del restaurant)
+Mantener estilo visual, reutilizar componentes y priorizar responsive, accesibilidad y mensajes claros.
 
-# Contenido
+## Contenido
 
-- El título "Mapa del restaurante" se sale de la card, cambia el titulo a "Mesas disponibles.
-- Elimina los textos "Entrada", "Salón principal", "Barra", "Cocina", "terraza", haz que cada mesa (1 al 40) sea presionable y se despliegue información sobre la mesa, como horarios y fechas disponibles. En la card "Horarios del restaurante", quita "Mié 12 ago", y los dos que siguen
+- Mostrar título "Mesas disponibles" sin desbordamientos.
+- Mostrar distribución visual del salón como referencia, sin selección manual.
+- Informar que el servidor asigna mesa automáticamente.
+- Mostrar horarios del restaurante sin fechas ficticias.
+- La disponibilidad depende de fecha, horario, cantidad de personas, capacidad y solapamientos.

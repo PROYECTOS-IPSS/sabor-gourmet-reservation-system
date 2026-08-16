@@ -1,30 +1,39 @@
 # Sabor Gourmet
 
-Aplicación web de reservas de mesas para el restaurante Sabor Gourmet.
+Aplicación web de reservas para restaurante. Permite consultar disponibilidad, registrar clientes, crear y administrar reservas, y gestionar mesas desde un panel protegido.
 
-## Proyecto
+## Alcance implementado
 
-El MVP implementado permite:
+- Disponibilidad pública sin iniciar sesión.
+- Registro público como `CUSTOMER`.
+- Login y logout con `express-session`.
+- Sesión mediante cookie `HTTP-only`.
+- Asignación automática de mesa activa según capacidad y horario.
+- Duración fija de 90 minutos.
+- Horarios cada 30 minutos, miércoles a domingo, de 18:00 a 21:30.
+- Validación de fechas pasadas, capacidad y solapamientos en servidor.
+- Creación, consulta, modificación y cancelación de reservas propias.
+- Código único de confirmación.
+- Cancelación lógica: la reserva no se elimina físicamente.
+- Dashboard para `ADMIN` y `EMPLOYEE`.
+- `EMPLOYEE`: lectura de mesas, clientes y reservas.
+- `ADMIN`: creación, edición y desactivación de mesas; creación, edición y cancelación de reservas.
+- Rutas frontend `/carta`, `/experiencia`, `/reservar`, `/mis-reservas`, `/login` y `/registrarse`.
 
-- consultar disponibilidad de mesas sin registrarse;
-- registrarse como cliente con nombre, apellido y correo;
-- iniciar y cerrar sesión mediante cookies de `express-session`;
-- redirigir clientes a `/reservar` y administradores/empleados a `/dashboard`;
-- asignar automáticamente una mesa activa con capacidad suficiente;
-- validar reservas y evitar solapamientos;
-- proteger el dashboard con sesión y roles `ADMIN` o `EMPLOYEE`;
-- mostrar mesas, capacidades y estado en la pantalla de reserva;
-- administrar la base mediante Prisma, migraciones y seed.
+## Roles demo
 
-El cliente público no necesita cuenta para consultar disponibilidad. El registro crea una sesión `CUSTOMER` y dirige a `/reservar`.
+Todos usan contraseña `admin1234` en desarrollo local:
 
-El alcance funcional está en [`docs/BRIEF.md`](docs/BRIEF.md), las reglas de desarrollo en [`AGENTS.md`](AGENTS.md) y las notas del flujo en [`docs/LOGIN-BRIEF.md`](docs/LOGIN-BRIEF.md).
+| Usuario | Email | Rol |
+|---|---|---|
+| Administrador | `admin@saborgourmet.local` | `ADMIN` |
+| María | `empleado@saborgourmet.local` | `EMPLOYEE` |
+| Carlos | `carlos@saborgourmet.local` | `CUSTOMER` |
+| Ana | `ana@saborgourmet.local` | `CUSTOMER` |
+| Luis | `luis@saborgourmet.local` | `CUSTOMER` |
+| Sofía | `sofia@saborgourmet.local` | `CUSTOMER` |
 
-## Estado actual
-
-La aplicación cuenta con API Express, autenticación por sesión, validación Zod, disponibilidad real contra PostgreSQL, seed de datos demo, pantalla de reservas y panel administrativo.
-
-Incluye gestión administrativa de mesas y reservas, asignación automática, cancelación lógica y códigos únicos de confirmación.
+La contraseña es únicamente para desarrollo. No usarla en producción.
 
 ## Arquitectura MVC
 
@@ -42,15 +51,17 @@ Models + Prisma Client
 PostgreSQL
 ```
 
-- **React:** vistas, formularios, estado de sesión y navegación.
+- **React:** vistas, formularios, navegación y estado visual.
 - **Routes:** endpoints y middlewares.
 - **Controllers:** entrada y salida HTTP.
-- **Services:** autenticación, disponibilidad, asignación y gestión administrativa.
-- **Models:** acceso a datos mediante Prisma.
-- **Schemas:** validación con Zod.
+- **Services:** reglas de autenticación, disponibilidad, asignación y reservas.
+- **Models:** acceso a PostgreSQL mediante Prisma.
+- **Schemas:** validación Zod.
 - **Middleware:** sesión, autorización, validación y errores.
 
-## Endpoints actuales
+## Endpoints
+
+### Salud y autenticación
 
 ```text
 GET  /api/health
@@ -58,53 +69,110 @@ POST /api/auth/register
 POST /api/auth/login
 GET  /api/auth/me
 POST /api/auth/logout
-GET  /api/dashboard              ADMIN o EMPLOYEE
-POST /api/reservations/availability
-GET  /api/admin/customers         ADMIN
-GET  /api/admin/tables            ADMIN
-POST /api/admin/tables            ADMIN
-PATCH /api/admin/tables/:id       ADMIN
-DELETE /api/admin/tables/:id      ADMIN
-GET  /api/admin/reservations      ADMIN
-POST /api/admin/reservations      ADMIN
-PATCH /api/admin/reservations/:id ADMIN
-POST /api/admin/reservations/:id/cancel ADMIN
+GET  /api/dashboard                 ADMIN o EMPLOYEE
 ```
 
-## Datos iniciales
+`GET /api/health` verifica también la conexión con PostgreSQL y responde `database: "ok"` cuando está disponible.
 
-`prisma/seed.ts` crea usuarios demo, 40 mesas activas con capacidades de 1 a 8 personas y reservas de ejemplo. Las contraseñas demo son solo para desarrollo local.
+### Reservas de clientes
 
-El modelo `User` incluye `name`, `apellido`, `email`, `passwordHash` y `role`. `Reservation` relaciona usuario y mesa y conserva estado de reserva.
+```text
+POST /api/reservations/availability  Público
+POST /api/reservations                CUSTOMER
+GET  /api/reservations/mine           CUSTOMER
+PATCH /api/reservations/:id           CUSTOMER propietario
+POST /api/reservations/:id/cancel     CUSTOMER propietario
+```
 
+El cliente envía fecha, hora y cantidad de personas. No envía una mesa como decisión definitiva; el servidor asigna una mesa disponible.
+
+### Administración
+
+```text
+GET    /api/admin/customers                 ADMIN o EMPLOYEE
+GET    /api/admin/tables                    ADMIN o EMPLOYEE
+POST   /api/admin/tables                    ADMIN
+PATCH  /api/admin/tables/:id                ADMIN
+DELETE /api/admin/tables/:id                ADMIN
+GET    /api/admin/reservations              ADMIN o EMPLOYEE
+POST   /api/admin/reservations              ADMIN
+PATCH  /api/admin/reservations/:id          ADMIN
+POST   /api/admin/reservations/:id/cancel   ADMIN
+```
+
+Todos los parámetros, cuerpos y queries que corresponden están validados con Zod.
+
+## Base de datos
+
+PostgreSQL y Prisma ORM.
+
+El seed actual crea:
+
+- 6 usuarios demo: 1 administrador, 1 empleado y 4 clientes.
+- 12 mesas activas.
+- 20 reservas demo consistentes con la capacidad de cada mesa.
+
+`prisma/seed.ts` usa `upsert` para reservas demo y evita duplicados al ejecutarse nuevamente.
 
 ## Instalación
 
 ### Requisitos
 
 - Node.js.
-- Yarn.
-- Docker, opcional.
+- Yarn 1.x.
+- PostgreSQL.
+- Docker Desktop opcional.
 
-### Backend
+### Variables de entorno
+
+Copiar `.env.example` como `.env`:
 
 ```bash
-yarn install
+copy .env.example .env
 ```
 
-Crear `.env` a partir de `.env.example` y configurar `DATABASE_URL` y `SESSION_SECRET`.
+En macOS/Linux:
 
-Con PostgreSQL local mediante Docker:
+```bash
+cp .env.example .env
+```
+
+Configurar como mínimo:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sabor_gourmet?schema=public"
+SESSION_SECRET="cambia-este-secreto-por-uno-de-16-caracteres-o-mas"
+```
+
+`.env` está excluido de Git. Nunca subir secretos. `.env.example` sí debe permanecer versionado.
+
+### PostgreSQL con Docker
 
 ```bash
 docker compose up -d
+```
+
+### Backend
+
+Desde la raíz:
+
+```bash
+yarn install
 yarn db:generate
-yarn prisma migrate dev
+yarn db:migrate
 yarn db:seed
 yarn dev
 ```
 
-API actual:
+`yarn db:migrate` puede solicitar nombre para una migración nueva en desarrollo. Para una base vacía, usar `init`.
+
+API:
+
+```text
+http://localhost:3000
+```
+
+Health check:
 
 ```text
 http://localhost:3000/api/health
@@ -120,9 +188,15 @@ yarn install
 yarn dev
 ```
 
-Frontend por defecto: `http://localhost:5173`.
+Vite mostrará la URL disponible, normalmente:
 
-## Comandos
+```text
+http://localhost:5173
+```
+
+Si el puerto está ocupado, Vite puede usar `5174`.
+
+## Verificación
 
 Backend, desde la raíz:
 
@@ -137,9 +211,25 @@ Frontend, desde `frontend/`:
 
 ```bash
 yarn typecheck
-yarn lint
 yarn build
 ```
+
+Estado verificado actualmente:
+
+- Backend typecheck: pasa.
+- Backend lint: pasa.
+- Tests: 11 pruebas exitosas.
+- Frontend typecheck: pasa.
+- Frontend build: pasa.
+
+## Documentación relacionada
+
+- [Brief funcional](docs/BRIEF.md)
+- [Guía de agentes](AGENTS.md)
+- [Diseño visual](docs/DESIGN.md)
+- [Brief de login](docs/LOGIN-BRIEF.md)
+- [Brief de reserva](docs/RESERVA-BRIEF.md)
+- [Informe técnico](INFORME.md)
 
 ## Fuera del MVP
 
@@ -148,5 +238,5 @@ yarn build
 - Emails, SMS y recordatorios.
 - Pagos.
 - Pedidos, delivery y menú.
-- Plano visual del salón.
+- Plano interactivo del salón.
 - Reportes y estadísticas.

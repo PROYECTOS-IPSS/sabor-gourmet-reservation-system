@@ -13,7 +13,7 @@ Restaurante moderno, simple y atractivo. La interfaz debe sentirse contemporáne
 1. Antes de crear o modificar cualquier vista, leer este documento completo.
 2. Usar `skill://frontend-design` para decisiones de paleta, tipografía, layout y elementos distintivos.
 3. Implementar con TailwindCSS. No usar CSS plano salvo que Tailwind no cubra el caso.
-4. Usar imágenes de fondo (gradientes sutiles, texturas, fotografía) para dar calidez y profundidad, no pantallas planas.
+4. Usar gradientes sutiles, texturas CSS o fotografía cuando exista un asset disponible; no crear pantallas planas sin intención visual.
 5. Diseñar mobile-first. Todo debe funcionar en escritorio, tableta y móvil.
 6. Respetar foco visible, navegación por teclado, contraste suficiente y `prefers-reduced-motion`.
 7. No usar placeholders ni colores genéricos de framework. Cada tono debe salir de la paleta definida aquí.
@@ -53,22 +53,6 @@ Cuando un componente tenga fondo `#e4d9ca`:
 | Body | Space Grotesk | 400, 500, 600 | Texto general, navegación, inputs |
 | Utility | DM Mono | 400, 500 | Labels, eyebrows, badges, botones pequeños, footer |
 
-### Escala tipográfica
-
-| Elemento | Familia | Tamaño | Peso | Tracking |
-|---|---|---|---|---|
-| H1 | Playfair Display | `clamp(64px, 9.5vw, 138px)` | 500 | `-0.075em` |
-| H2 | Playfair Display | `clamp(40px, 5vw, 70px)` | 500 | `-0.06em` |
-| H3 | Playfair Display | `32px` | 500 | `-0.05em` |
-| Cita | Playfair Display | `20px` | 500 | — |
-| Body | Space Grotesk | `14px` | 400 | — |
-| Body small | Space Grotesk | `12px` | 400 | — |
-| Nav | Space Grotesk | `12px` | 500 | — |
-| Eyebrow | DM Mono | `10px` | 400 | `0.14em` |
-| Label | DM Mono | `9px` | 400 | `0.12em` |
-| Footer | DM Mono | `9px` | 400 | `0.06em` |
-| Button sm | DM Mono | `10px` | 400 | `0.07em` |
-
 ## Layout
 
 - Ancho máximo: `1440px` centrado con `margin: 0 auto`.
@@ -78,15 +62,9 @@ Cuando un componente tenga fondo `#e4d9ca`:
 - Grid de features: 3 columnas en escritorio, apilado en móvil.
 - Panel de reserva: layout de dos columnas (heading + form), apilado en móvil.
 
-## Assets disponibles
+## Assets
 
-| Archivo | Ubicación | Uso |
-|---|---|---|
-| `hero.png` | `frontend/src/assets/hero.png` | Fondo del hero o secciones principales |
-| `favicon.svg` | `frontend/public/favicon.svg` | Favicon del sitio |
-| `icons.svg` | `frontend/public/icons.svg` | Sprites de íconos |
-
-Agregar imágenes nuevas en `frontend/src/assets/`. Usar formatos modernos (WebP, AVIF) con fallback. Las imágenes de fondo deben ser sutiles y no competir con el texto.
+El MVP actual no depende de archivos gráficos externos. Las superficies visuales usan TailwindCSS, gradientes sutiles, bordes y la tipografía definida arriba. Si se agregan assets, deben ubicarse en `frontend/src/assets/` o `frontend/public/` y documentarse aquí.
 
 ## Vistas del MVP
 
@@ -94,7 +72,7 @@ Agregar imágenes nuevas en `frontend/src/assets/`. Usar formatos modernos (WebP
 
 | Vista | Descripción |
 |---|---|
-| Inicio | Hero con imagen de fondo, navegación, acceso a disponibilidad |
+| Inicio | Hero, navegación, acceso a disponibilidad |
 | Disponibilidad | Formulario de búsqueda: fecha, horario, personas. Resultados claros |
 | Login | Formulario limpio, centrado, sin distracciones |
 | Registro | Similar a login, con campos necesarios |
@@ -105,8 +83,8 @@ Agregar imágenes nuevas en `frontend/src/assets/`. Usar formatos modernos (WebP
 |---|---|
 | Reservar | Formulario completo con resumen antes de confirmar |
 | Confirmación | Código único, datos de la reserva, opción de volver al inicio |
-| Mis reservas | Listado con estado, filtro y acciones por reserva |
-| Editar reserva | Mismo formulario de creación, precargado |
+| Mis reservas | Listado con estado y acciones por reserva |
+| Editar reserva | Mismo formulario de creación, fecha/hora/personas; mesa reasignada automáticamente |
 | Cancelar | Confirmación de cancelación con resumen |
 
 ### Administrador
@@ -124,7 +102,7 @@ Toda vista debe contemplar:
 
 | Estado | Qué mostrar |
 |---|---|
-| Vacío | Ilustración sutil + texto orientador. Ej: "Aún no tenés reservas. ¿Querés hacer una?" |
+| Vacío | Texto orientador y acción siguiente |
 | Carga | Skeleton o spinner sutil, sin flickering |
 | Error | Mensaje claro, específico y accionable. Nunca "Error desconocido" |
 | Éxito | Confirmación visible con resumen, sin desvanecer automáticamente |
@@ -139,7 +117,7 @@ Toda vista debe contemplar:
 | Booking form | Formulario de búsqueda de disponibilidad |
 | Time slot picker | Selector de horarios en intervalos de 30 min |
 | Reservation card | Resumen de reserva en listados |
-| Status badge | Chip de estado: CONFIRMED, CANCELLED |
-| Confirmation code | Código único con estilo destacado |
-| Empty state | Mensaje e ilustración para listas vacías |
-| Error alert | Banner de error con icono y acción |
+| Status badge | Chip de estado |
+| Confirmation code | Código único destacado |
+| Empty state | Mensaje para listas vacías |
+| Error alert | Banner de error con acción |

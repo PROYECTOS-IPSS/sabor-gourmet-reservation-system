@@ -1,7 +1,6 @@
 import { Router } from 'express';
+import { health } from '../controllers/health.controller.js';
 
 export const healthRoutes = Router();
 
-healthRoutes.get('/', (_request, response) => {
-  response.json({ status: 'ok', service: 'sabor-gourmet-api' });
-});
+healthRoutes.get('/', health);

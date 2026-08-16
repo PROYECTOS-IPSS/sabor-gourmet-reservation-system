@@ -5,12 +5,12 @@ type Client = PrismaClient;
 
 // --- New client-based functions ---
 
-export function findAvailableTableWithClient(client: Client, date: Date, startTime: Date, endTime: Date, guests: number) {
+export function findAvailableTableWithClient(client: Client, date: Date, startTime: Date, endTime: Date, guests: number, excludeId?: number) {
   return client.table.findFirst({
     where: {
       isActive: true,
       capacity: { gte: guests },
-      reservations: { none: { date, status: 'CONFIRMED', startTime: { lt: endTime }, endTime: { gt: startTime } } },
+      reservations: { none: { date, status: 'CONFIRMED', startTime: { lt: endTime }, endTime: { gt: startTime }, ...(excludeId ? { id: { not: excludeId } } : {}) } },
     },
     orderBy: [{ capacity: 'asc' }, { number: 'asc' }],
   });
@@ -24,8 +24,17 @@ export function findActiveTableByNumberWithClient(client: Client, number: number
   return client.table.findFirst({ where: { number, isActive: true } });
 }
 
-export function hasOverlappingReservationWithClient(client: Client, tableId: number, date: Date, startTime: Date, endTime: Date) {
-  return client.reservation.findFirst({ where: { tableId, date, status: 'CONFIRMED', startTime: { lt: endTime }, endTime: { gt: startTime } } });
+export function hasOverlappingReservationWithClient(client: Client, tableId: number, date: Date, startTime: Date, endTime: Date, excludeId?: number) {
+  return client.reservation.findFirst({
+    where: {
+      tableId,
+      date,
+      status: 'CONFIRMED',
+      startTime: { lt: endTime },
+      endTime: { gt: startTime },
+      ...(excludeId ? { id: { not: excludeId } } : {}),
+    },
+  });
 }
 
 export function findReservationsByUserIdWithClient(client: Client, userId: number) {
@@ -41,7 +50,7 @@ export function findUserReservationWithClient(client: Client, id: number, userId
 }
 
 export function cancelUserReservationWithClient(client: Client, id: number, userId: number) {
-  return client.reservation.update({ where: { id }, data: { status: 'CANCELLED' } });
+  return client.reservation.update({ where: { id, userId }, data: { status: 'CANCELLED' } });
 }
 
 export function updateUserReservationWithClient(client: Client, id: number, userId: number, data: { tableId: number; date: Date; startTime: Date; endTime: Date; guests: number }) {
@@ -70,8 +79,8 @@ export function cancelReservationWithClient(client: Client, id: number) {
 
 // --- Old functions (keep using global prisma) ---
 
-export function findAvailableTable(date: Date, startTime: Date, endTime: Date, guests: number) {
-  return findAvailableTableWithClient(prisma, date, startTime, endTime, guests);
+export function findAvailableTable(date: Date, startTime: Date, endTime: Date, guests: number, excludeId?: number) {
+  return findAvailableTableWithClient(prisma, date, startTime, endTime, guests, excludeId);
 }
 
 export function createReservation(data: { userId: number; tableId: number; date: Date; startTime: Date; endTime: Date; guests: number; confirmationCode: string }) {
@@ -82,8 +91,8 @@ export function findActiveTableByNumber(number: number) {
   return findActiveTableByNumberWithClient(prisma, number);
 }
 
-export function hasOverlappingReservation(tableId: number, date: Date, startTime: Date, endTime: Date) {
-  return hasOverlappingReservationWithClient(prisma, tableId, date, startTime, endTime);
+export function hasOverlappingReservation(tableId: number, date: Date, startTime: Date, endTime: Date, excludeId?: number) {
+  return hasOverlappingReservationWithClient(prisma, tableId, date, startTime, endTime, excludeId);
 }
 
 export function findReservationsByUserId(userId: number) {
